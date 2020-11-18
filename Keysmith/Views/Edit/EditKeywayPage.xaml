@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Keysmith.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Keysmith.Views.EditKeywayPage">
+    <Shell.TitleView>
+        <Label Text="EDIT KEYWAY" Style="{StaticResource titleViewLabelStyle}"/>
+    </Shell.TitleView>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <StackLayout.BindingContext>
+                    <vm:EditManufacturerViewModel/>
+                </StackLayout.BindingContext>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Button Text="NEW" Command="{Binding NewCurrentItemCommand}" Style="{StaticResource buttonStyle}"/>
+                    <Button Text="SAVE" Command="{Binding SaveCurrentItemCommand}" Style="{StaticResource buttonStyle}"/>
+                    <Button Text="DELETE" Command="{Binding DeleteCurrentItemCommand}" Style="{StaticResource buttonStyle}"/>
+                </StackLayout>
+                <RefreshView Command="{Binding RefreshCurrentItemCommand}" IsRefreshing="{Binding IsRefreshingCurrentItem}">
+                    <ScrollView>
+                        <Grid VerticalOptions="Start">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="1" Text="Manufacturer ID:" Style="{StaticResource headerColumnLabelStyle}"/>
+                            <Frame Grid.Row="0" Grid.Column="2" Style="{StaticResource editFrameStyle}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SelectCurrentItemCommand}"/>
+                                </Frame.GestureRecognizers>
+                                <Label Grid.Column="1" Text="{Binding CurrentItem}" Style="{StaticResource selectorTriggerLabelStyle}"/>
+                            </Frame>
+
+                            <Label Grid.Row="1" Grid.Column="1" Text="Manufacturer Name:" Style="{StaticResource headerColumnLabelStyle}"/>
+                            <Frame Grid.Row="1" Grid.Column="2" Style="{StaticResource editFrameStyle}">
+                                <Entry Grid.Row="1" Grid.Column="2" Text="{Binding CurrentItem.Name}" Style="{StaticResource textEntryStyle}"/>
+                            </Frame>
+                        </Grid>
+                    </ScrollView>
+                </RefreshView>
+            </StackLayout>
+
+            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <StackLayout.BindingContext>
+                    <vm:EditKeywayViewModel/>
+                </StackLayout.BindingContext>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Button Text="NEW" Command="{Binding NewCurrentItemCommand}" Style="{StaticResource buttonStyle}"/>
+                    <Button Text="SAVE" Command="{Binding SaveCurrentItemCommand}" Style="{StaticResource buttonStyle}"/>
+                    <Button Text="DELETE" Command="{Binding DeleteCurrentItemCommand}" Style="{StaticResource buttonStyle}"/>
+                </StackLayout>
+                <RefreshView Command="{Binding RefreshCurrentItemCommand}" IsRefreshing="{Binding IsRefreshingCurrentItem}">
+                    <ScrollView>
+                        <Grid VerticalOptions="Start">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="1" Text="Keyway ID:" Style="{StaticResource headerColumnLabelStyle}"/>
+                            <Frame Grid.Row="0" Grid.Column="2" Style="{StaticResource editFrameStyle}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SelectCurrentItemCommand}"/>
+                                </Frame.GestureRecognizers>
+                                <Label Grid.Column="1" Text="{Binding CurrentItem}" Style="{StaticResource selectorTriggerLabelStyle}"/>
+                            </Frame>
+
+                            <Label Grid.Row="1" Grid.Column="1" Text="Manufacturer:" Style="{StaticResource headerColumnLabelStyle}"/>
+                            <Frame Grid.Row="1" Grid.Column="2" Style="{StaticResource editFrameStyle}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SelectSubmodelCommand}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="40"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Text="{Binding CurrentItem.Manufacturer.Name}" Style="{StaticResource selectorTriggerLabelStyle}"/>
+                                    <Button Grid.Column="1" HorizontalOptions="End" Text="X" Command="{Binding ClearSubmodelCommand}"/>
+                                </Grid>
+                            </Frame>
+
+                            <Label Grid.Row="2" Grid.Column="1" Text="Keyway Name:" Style="{StaticResource headerColumnLabelStyle}"/>
+                            <Frame Grid.Row="2" Grid.Column="2" Style="{StaticResource editFrameStyle}">
+                                <Entry Grid.Row="2" Grid.Column="2" Text="{Binding CurrentItem.Name}" Style="{StaticResource textEntryStyle}"/>
+                            </Frame>
+                        </Grid>
+                    </ScrollView>
+                </RefreshView>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

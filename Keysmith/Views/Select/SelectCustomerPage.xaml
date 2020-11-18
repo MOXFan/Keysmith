@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Keysmith.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Keysmith.Views.SelectCustomerPage">
+    <ContentPage.BindingContext>
+        <vm:SelectCustomerViewModel/>
+    </ContentPage.BindingContext>
+    <Shell.TitleView>
+        <Label Text="SELECT CUSTOMER" Style="{StaticResource titleViewLabelStyle}"/>
+    </Shell.TitleView>
+    <ContentPage.Content>
+        <Grid HorizontalOptions="FillAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="1"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="1" Grid.Column="1" Text="Search:" Style="{StaticResource headerColumnLabelStyle}"/>
+            <Frame Grid.Row="1" Grid.Column="2" Style="{StaticResource editFrameStyle}">
+                <Entry HorizontalOptions="FillAndExpand" Text="{Binding SearchFilter}" Style="{StaticResource textEntryStyle}"/>
+            </Frame>
+            <RefreshView Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"  Command="{Binding RefreshItemsCommand}" IsRefreshing="{Binding IsRefreshingItems}">
+                <ScrollView>
+                    <CollectionView ItemsSource="{Binding FilteredItems}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" SelectionChangedCommand="{Binding SelectionChangedCommand}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <ContentView>
+                                    <Frame Margin="0,0,0,2" Style="{StaticResource listItemFrameStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="10*"/>
+                                                <ColumnDefinition Width="10"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding ID}"/>
+
+                                            <Label Grid.Column="2" Grid.Row="0" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Name:" />
+                                            <Label Grid.Column="3" Grid.Row="0" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="{Binding Name}"/>
+
+                                            <Label Grid.Column="2" Grid.Row="1" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Acct#:" />
+                                            <Label Grid.Column="3" Grid.Row="1" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="{Binding AccountNumber}"/>
+                                        </Grid>
+                                    </Frame>
+                                </ContentView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </RefreshView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
