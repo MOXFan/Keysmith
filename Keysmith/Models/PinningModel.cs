@@ -1,87 +1,84 @@
 ﻿using Keysmith.PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Keysmith.Models
 {
-    public class PinningModel : PropertyChangedBase
+    public enum PinningType
     {
-        #region Private Members
-        private ObservableCollection<ObservableCollection<string>> _columns = new ObservableCollection<ObservableCollection<string>>();
-        private const string defaultTopPinHeader = "Top Pins:";
+        Standard = 0,
+        SFIC = 1
+    }
+
+    public class PinningModel
+    {
+        #region Constant Values
+        private const string defaultDriverPinHeader = "Driver Pins:";
+        private const string defaultControlPinHeader = "Control Pins:";
+        private const string defaultMasterPinHeader = "Master Pins:";
         private const string defaultBottomPinHeader = "Bottom Pins:";
-        private string _topPinHeader = defaultTopPinHeader;
-        private string _bottomPinHeader = defaultBottomPinHeader;
-        private int _rowCount = 0;
-        private int _columnCount = 0;
+        #endregion
+        #region Private Members
+        private PinningType _cylinderType = PinningType.Standard;
+        private Func<List<int>, ObservableCollection<string>> CalculatePinColumn;
         #endregion
         #region Constructors
-        public PinningModel(string newBottomPinHeader = defaultBottomPinHeader, string newTopPinHeader = defaultTopPinHeader)
+        public PinningModel(PinningType newCylinderType = PinningType.Standard, string newBottomPinHeader = defaultBottomPinHeader, string newMasterPinHeader = defaultMasterPinHeader, string newControlPinHeader = defaultControlPinHeader, string newDriverPinHeader = defaultDriverPinHeader)
         {
-            TopPinHeader = newTopPinHeader;
-            BottomPinHeader = newBottomPinHeader;
-
-            GenerateColumns(new ObservableCollection<KeyModel>());
+            Keys = new ObservableCollection<KeyModel>();
+            Initialize(newCylinderType, newBottomPinHeader, newMasterPinHeader, newControlPinHeader, newDriverPinHeader);
         }
-        public PinningModel(ObservableCollection<KeyModel> inputKeys, string newBottomPinHeader = defaultBottomPinHeader, string newTopPinHeader = defaultTopPinHeader)
+        public PinningModel(ObservableCollection<KeyModel> inputKeys, PinningType newCylinderType = PinningType.Standard, string newBottomPinHeader = defaultBottomPinHeader, string newMasterPinHeader = defaultMasterPinHeader, string newControlPinHeader = defaultControlPinHeader, string newDriverPinHeader = defaultDriverPinHeader)
         {
-            TopPinHeader = newTopPinHeader;
-            BottomPinHeader = newBottomPinHeader;
-            GenerateColumns(inputKeys);
+            Keys = inputKeys;
+            Initialize(newCylinderType, newBottomPinHeader, newMasterPinHeader, newControlPinHeader, newDriverPinHeader);
         }
         #endregion
         #region Properties
-        public ObservableCollection<ObservableCollection<string>> Columns
+        public ObservableCollection<KeyModel> Keys { get; private set; }
+        public ObservableCollection<ObservableCollection<string>> Columns { get; private set; }
+        public string DriverPinHeader { get; private set; }
+        public string ControlPinHeader { get; private set; }
+        public string MasterPinHeader { get; private set; }
+        public string BottomPinHeader { get; private set; }
+        public int RowCount { get; private set; }
+        public int ColumnCount { get; private set; }
+        public PinningType CylinderType
         {
-            get { return _columns; }
+            get { return _cylinderType; }
             set
             {
-                _columns = value;
-                OnPropertyChanged();
-                UpdateCounts();
-            }
-        }
-        public string TopPinHeader
-        {
-            get { return _topPinHeader; }
-            set
-            {
-                _topPinHeader = value;
-                OnPropertyChanged();
-            }
-        }
-        public string BottomPinHeader
-        {
-            get { return _bottomPinHeader; }
-            set
-            {
-                _bottomPinHeader = value;
-                OnPropertyChanged();
-            }
-        }
-        public int RowCount
-        {
-            get { return _rowCount; }
-            set
-            {
-                _rowCount = value;
-                OnPropertyChanged();
-            }
-        }
-        public int ColumnCount
-        {
-            get { return _columnCount; }
-            set
-            {
-                _columnCount = value;
-                OnPropertyChanged();
+                _cylinderType = value;
+                RefreshPinColumnDelegate();
             }
         }
         #endregion
-        #region Methods
-        public void GenerateColumns(ObservableCollection<KeyModel> inputKeysCollection)
+        #region Private Methods
+        private void Initialize(PinningType newCylinderType = PinningType.Standard, string newBottomPinHeader = defaultBottomPinHeader, string newMasterPinHeader = defaultMasterPinHeader, string newControlPinHeader = defaultControlPinHeader, string newDriverPinHeader = defaultDriverPinHeader)
         {
-            if (inputKeysCollection.Count == 0)
+            CylinderType = newCylinderType;
+            BottomPinHeader = newBottomPinHeader;
+            MasterPinHeader = newMasterPinHeader;
+            ControlPinHeader = newControlPinHeader;
+            DriverPinHeader = newDriverPinHeader;
+            Recalculate();
+        }
+        private void RefreshPinColumnDelegate()
+        {
+            switch (this.CylinderType)
+            {
+                case PinningType.SFIC:
+                    CalculatePinColumn = CalculateSFICPinColumn;
+                    break;
+                default:
+                    CalculatePinColumn = CalculateStandardPinColumn;
+                    break;
+            }
+        }
+        private void Recalculate()
+        {
+            if (Keys.Count == 0)
             {
                 KeyModel emptyKey = new KeyModel
                 { Cuts = "000000" };
@@ -89,65 +86,18 @@ namespace Keysmith.Models
             }
             else
             {
-                KeyModel[] outputArray = new KeyModel[inputKeysCollection.Count];
-                inputKeysCollection.CopyTo(outputArray, 0);
+                KeyModel[] outputArray = new KeyModel[Keys.Count];
+                Keys.CopyTo(outputArray, 0);
                 GenerateColumns(outputArray);
             }
         }
-        public void GenerateColumns(params KeyModel[] inputKeys)
-        { Columns = GetPinColumns(GetCutColumns(inputKeys)); }
-        public ObservableCollection<ObservableCollection<string>> GetPinColumns(List<List<int>> cutColumns)
-        {
-            ObservableCollection<ObservableCollection<string>> pinColumns = new ObservableCollection<ObservableCollection<string>>();
-
-            foreach (List<int> currentCutColumn in cutColumns)
-            { pinColumns.Add(CalculatePinColumn(currentCutColumn)); }
-
-            return PadPinColumnns(pinColumns);
+        private void GenerateColumns(params KeyModel[] inputKeys)
+         {
+            ObservableCollection<ObservableCollection<string>> outputColumns = GetPinColumns(GetCutColumns(inputKeys));
+            Columns = outputColumns;
+            UpdateCounts();
         }
-        public int GetMaxColumnHeight(ObservableCollection<ObservableCollection<string>> inputColumns)
-        {
-            int maxHeight = 0;
-
-            foreach (ObservableCollection<string> currentColumn in inputColumns)
-            {
-                if (currentColumn.Count > maxHeight)
-                { maxHeight = currentColumn.Count; }
-            }
-
-            return maxHeight;
-        }
-        public ObservableCollection<ObservableCollection<string>> PadPinColumnns(ObservableCollection<ObservableCollection<string>> pinColumns, string paddingString = "-")
-        {
-            int maxHeight = GetMaxColumnHeight(pinColumns);
-
-            foreach (ObservableCollection<string> currentColumn in pinColumns)
-            {
-                while (currentColumn.Count < maxHeight)
-                { currentColumn.Add(paddingString); }
-            }
-
-            return pinColumns;
-        }
-        public ObservableCollection<string> CalculatePinColumn(List<int> cutColumn)
-        {
-            ObservableCollection<string> pinColumn = new ObservableCollection<string>();
-
-            cutColumn.Sort();
-            int stackHeight = 0;
-            for (int index = 0; index < cutColumn.Count; index++)
-            {
-                int currentCut = cutColumn[index];
-                int currentPin = currentCut - stackHeight;
-                stackHeight = currentCut;
-
-                if (currentPin > 0 || index == 0)
-                { pinColumn.Add(currentPin.ToString()); }
-            }
-
-            return pinColumn;
-        }
-        public List<List<int>> GetCutColumns(params KeyModel[] inputKeys)
+        private static List<List<int>> GetCutColumns(params KeyModel[] inputKeys)
         {
             int numberOfKeys = inputKeys.Length;
             int maxLength = GetMaxLength(inputKeys);
@@ -171,7 +121,62 @@ namespace Keysmith.Models
 
             return cutColumns;
         }
-        public static int GetMaxLength(params KeyModel[] inputKeys)
+        private ObservableCollection<ObservableCollection<string>> GetPinColumns(List<List<int>> cutColumns)
+        {
+            ObservableCollection<ObservableCollection<string>> pinColumns = new ObservableCollection<ObservableCollection<string>>();
+
+            foreach (List<int> currentCutColumn in cutColumns)
+            { pinColumns.Add(CalculatePinColumn(currentCutColumn)); }
+
+            return PadPinColumnns(pinColumns);
+        }
+        private static int GetMaxColumnHeight(ObservableCollection<ObservableCollection<string>> inputColumns)
+        {
+            int maxHeight = 0;
+
+            foreach (ObservableCollection<string> currentColumn in inputColumns)
+            {
+                if (currentColumn.Count > maxHeight)
+                { maxHeight = currentColumn.Count; }
+            }
+
+            return maxHeight;
+        }
+        private static ObservableCollection<string> CalculateStandardPinColumn(List<int> cutColumn)
+        {
+            ObservableCollection<string> pinColumn = new ObservableCollection<string>();
+
+            cutColumn.Sort();
+            int stackHeight = 0;
+            for (int index = 0; index < cutColumn.Count; index++)
+            {
+                int currentCut = cutColumn[index];
+                int currentPin = currentCut - stackHeight;
+                stackHeight = currentCut;
+
+                if (currentPin > 0 || index == 0)
+                { pinColumn.Add(currentPin.ToString()); }
+            }
+
+            return pinColumn;
+        }
+        private ObservableCollection<string> CalculateSFICPinColumn(List<int> arg)
+        {
+            throw new NotImplementedException();
+        }
+        private static ObservableCollection<ObservableCollection<string>> PadPinColumnns(ObservableCollection<ObservableCollection<string>> pinColumns, string paddingString = "-")
+        {
+            int maxHeight = GetMaxColumnHeight(pinColumns);
+
+            foreach (ObservableCollection<string> currentColumn in pinColumns)
+            {
+                while (currentColumn.Count < maxHeight)
+                { currentColumn.Add(paddingString); }
+            }
+
+            return pinColumns;
+        }
+        private static int GetMaxLength(params KeyModel[] inputKeys)
         {
             int outputLength = 0;
             foreach (KeyModel currentKey in inputKeys)
@@ -181,7 +186,7 @@ namespace Keysmith.Models
             }
             return outputLength;
         }
-        public void UpdateCounts()
+        private void UpdateCounts()
         {
             ColumnCount = Columns.Count;
             RowCount = GetMaxColumnHeight(Columns);

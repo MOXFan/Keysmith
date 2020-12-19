@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Keysmith.ViewModels"
+             xmlns:controls="clr-namespace:Keysmith.Views.Controls"
+             mc:Ignorable="d"
+             x:Class="Keysmith.Views.SFICPinningPage">
+    <ContentPage.BindingContext>
+        <vm:SFICPinningViewModel/>
+    </ContentPage.BindingContext>
+    <Shell.TitleView>
+        <Label Text="PIN SFIC CYLINDER" Style="{StaticResource titleViewLabelStyle}"/>
+    </Shell.TitleView>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="2" >
+            <controls:StandardPinningView Pinning="{Binding Pinning}"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+
+            <Frame Style="{StaticResource panelFrameStyle}">
+                <StackLayout Orientation="Vertical" Padding="2">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                        <Button Text="ADD KEY" Command="{Binding AddKeyCommand}" Style="{StaticResource buttonStyle}"/>
+                        <Button Text="CLEAR KEYS" Command="{Binding ClearKeysCommand}" Style="{StaticResource buttonStyle}"/>
+                    </StackLayout>
+
+                    <RefreshView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding RefreshSelectedKeysCommand}" IsRefreshing="{Binding IsRefreshingSelectedKeys}">
+                        <ScrollView>
+                            <CollectionView ItemsSource="{Binding SelectedKeys}" SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ContentView>
+                                            <Frame Margin="0,0,0,2" Style="{StaticResource listItemFrameStyle}">
+                                                <Grid Margin="10,0,10,0" VerticalOptions="Start">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="10*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Label Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{Binding ID}"/>
+
+                                                    <Label Grid.Column="1" Grid.Row="0" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Code:" />
+                                                    <Label Grid.Column="2" Grid.Row="0" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="{Binding Code, Mode=OneWay}"/>
+
+                                                    <Label Grid.Column="1" Grid.Row="1" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Cuts:"/>
+                                                    <Label Grid.Column="2" Grid.Row="1" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="{Binding Cuts}"/>
+                                                </Grid>
+                                            </Frame>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+                    </RefreshView>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,5 +1,4 @@
 ﻿using Keysmith.Models;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -75,7 +74,7 @@ namespace Keysmith.Views.Controls
             {
                 Label currentLabel = new Label
                 {
-                    Text = Pinning.TopPinHeader,
+                    Text = Pinning.MasterPinHeader,
                     Style = headerStyle
                 };
 

@@ -13,6 +13,9 @@
         <Tab Title="Standard" Route="standard">
             <ShellContent ContentTemplate="{DataTemplate views:StandardPinningPage}"/>
         </Tab>
+        <Tab Title="SFIC" Route="sfic">
+            <ShellContent ContentTemplate="{DataTemplate views:SFICPinningPage}"/>
+        </Tab>
     </FlyoutItem>
     <FlyoutItem Title="Edit" Route="edit">
         <Tab Title="Key" Route="key">
@@ -26,6 +29,14 @@
         </Tab>
         <Tab Title="Customer" Route="customer">
             <ShellContent ContentTemplate="{DataTemplate views:EditCustomerPage}"/>
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Title="Settings" Route="settings">
+        <Tab Title="Database" Route="database">
+            <ShellContent ContentTemplate="{DataTemplate views:DatabasePage}"/>
+        </Tab>
+        <Tab Title="Options" Route="options">
+            <ShellContent ContentTemplate="{DataTemplate views:OptionsPage}"/>
         </Tab>
     </FlyoutItem>
 </Shell>
