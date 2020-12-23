@@ -22,6 +22,7 @@ namespace Keysmith.Models
         #region Private Members
         private PinningType _cylinderType = PinningType.Standard;
         private Func<List<int>, ObservableCollection<string>> CalculatePinColumn;
+        private Action GenerateEmptyColumns;
         #endregion
         #region Constructors
         public PinningModel(PinningType newCylinderType = PinningType.Standard, string newBottomPinHeader = defaultBottomPinHeader, string newMasterPinHeader = defaultMasterPinHeader, string newControlPinHeader = defaultControlPinHeader, string newDriverPinHeader = defaultDriverPinHeader)
@@ -38,6 +39,7 @@ namespace Keysmith.Models
         #region Properties
         public ObservableCollection<KeyModel> Keys { get; private set; }
         public ObservableCollection<ObservableCollection<string>> Columns { get; private set; }
+        public ObservableCollection<String> RowHeaders { get; private set; }
         public string DriverPinHeader { get; private set; }
         public string ControlPinHeader { get; private set; }
         public string MasterPinHeader { get; private set; }
@@ -70,9 +72,11 @@ namespace Keysmith.Models
             {
                 case PinningType.SFIC:
                     CalculatePinColumn = CalculateSFICPinColumn;
+                    GenerateEmptyColumns = GenerateEmptySFICColumns;
                     break;
                 default:
                     CalculatePinColumn = CalculateStandardPinColumn;
+                    GenerateEmptyColumns = GenerateEmptyStandardColumns;
                     break;
             }
         }
@@ -80,9 +84,7 @@ namespace Keysmith.Models
         {
             if (Keys.Count == 0)
             {
-                KeyModel emptyKey = new KeyModel
-                { Cuts = "000000" };
-                GenerateColumns(emptyKey);
+                GenerateEmptyColumns();
             }
             else
             {
@@ -96,6 +98,14 @@ namespace Keysmith.Models
             ObservableCollection<ObservableCollection<string>> outputColumns = GetPinColumns(GetCutColumns(inputKeys));
             Columns = outputColumns;
             UpdateCounts();
+            RowHeaders = new ObservableCollection<string>();
+            for (int index = 0; index < RowCount; index++)
+            {
+                if(index == RowCount - 1)
+                { RowHeaders.Add(BottomPinHeader); }
+                else
+                { RowHeaders.Add(MasterPinHeader); }
+            }
         }
         private static List<List<int>> GetCutColumns(params KeyModel[] inputKeys)
         {
@@ -160,7 +170,17 @@ namespace Keysmith.Models
 
             return pinColumn;
         }
+        private void GenerateEmptyStandardColumns()
+        {
+            KeyModel emptyKey = new KeyModel
+            { Cuts = "000000" };
+            GenerateColumns(emptyKey);
+        }
         private ObservableCollection<string> CalculateSFICPinColumn(List<int> arg)
+        {
+            throw new NotImplementedException();
+        }
+        private void GenerateEmptySFICColumns()
         {
             throw new NotImplementedException();
         }

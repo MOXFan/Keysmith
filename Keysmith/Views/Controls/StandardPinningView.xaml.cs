@@ -74,12 +74,9 @@ namespace Keysmith.Views.Controls
             {
                 Label currentLabel = new Label
                 {
-                    Text = Pinning.MasterPinHeader,
+                    Text = Pinning.RowHeaders[rowIndex],
                     Style = headerStyle
                 };
-
-                if (rowIndex == Pinning.RowCount - 1)
-                { currentLabel.Text = Pinning.BottomPinHeader; }
 
                 PinningGrid.Children.Add(currentLabel, 0, rowIndex);
             }
