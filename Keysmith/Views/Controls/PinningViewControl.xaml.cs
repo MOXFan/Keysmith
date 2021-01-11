@@ -6,23 +6,26 @@ using Xamarin.Forms.Xaml;
 namespace Keysmith.Views.Controls
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class StandardPinningView : Frame
+    public partial class PinningViewControl : Frame
     {
+        #region Static Values
+        public static GridLength PinRowHeight = GridLength.Auto;
+        public static GridLength PinColumnWidth = 30;
+        public static GridLength HeaderColumnWidth = GridLength.Auto;
+        #endregion
         #region Constructors
-        public StandardPinningView()
+        public PinningViewControl()
         {
             InitializeComponent();
             Refresh();
         }
         #endregion
         #region Properties
-        public PinningModel Pinning
+        public SFICPinningModel Pinning
         {
-            get { return (PinningModel)GetValue(PinningProperty); }
+            get { return (SFICPinningModel)GetValue(PinningProperty); }
             set { SetValue(PinningProperty, value); }
         }
-        public int PinColumnWidth
-        { get { return 30; } }
         #endregion
         #region Bindable Properties
         public static readonly BindableProperty PinningProperty = GeneratePinningBindableProperty();
@@ -45,21 +48,21 @@ namespace Keysmith.Views.Controls
         private void GenerateRowDefinitions()
         {
             PinningGrid.RowDefinitions.Clear();
-            for (int currentCount = 1; currentCount <= Pinning.RowCount; currentCount++)
-            { PinningGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); }
+            for (int currentCount = 0; currentCount < Pinning.RowHeaders.Count; currentCount++)
+            { PinningGrid.RowDefinitions.Add(new RowDefinition { Height = PinRowHeight }); }
         }
         private void GenerateColumnDefinitions()
         {
             PinningGrid.ColumnDefinitions.Clear();
 
             ColumnDefinition headerColumn = new ColumnDefinition
-            { Width = GridLength.Auto };
+            { Width = HeaderColumnWidth };
             PinningGrid.ColumnDefinitions.Add(headerColumn);
 
             for (int currentCount = 1; currentCount <= Pinning.ColumnCount; currentCount++)
             {
                 ColumnDefinition currentColumn = new ColumnDefinition
-                { Width = new GridLength(PinColumnWidth) };
+                { Width = PinColumnWidth };
                 PinningGrid.ColumnDefinitions.Add(currentColumn);
             }
         }
@@ -67,18 +70,15 @@ namespace Keysmith.Views.Controls
         {
             Style headerStyle = Application.Current.Resources["headerColumnLabelStyle"] as Style;
 
-            for (int rowIndex = 0; rowIndex < Pinning.RowCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < Pinning.RowHeaders.Count; rowIndex++)
             {
                 Label currentLabel = new Label
                 {
-                    Text = Pinning.MasterPinHeader,
+                    Text = Pinning.RowHeaders[rowIndex],
                     Style = headerStyle
                 };
 
-                if (rowIndex == Pinning.RowCount - 1)
-                { currentLabel.Text = Pinning.BottomPinHeader; }
-
-                PinningGrid.Children.Add(currentLabel, 0, rowIndex);
+                PinningGrid.Children.Add(currentLabel, 0, Pinning.RowHeaders.Count - rowIndex - 1);
             }
         }
         private void PopulatePins()
@@ -86,14 +86,15 @@ namespace Keysmith.Views.Controls
             Style pinFrameStyle = Application.Current.Resources["pinDisplayFrameStyle"] as Style;
             Style pinLabelStyle = Application.Current.Resources["pinLabelStyle"] as Style;
 
-            for (int columnIndex = 0; columnIndex < Pinning.ColumnCount; columnIndex++)
+            for (int rowIndex = 0; rowIndex < Pinning.Rows.Count; rowIndex++)
             {
-                ObservableCollection<string> currentColumn = Pinning.Columns[columnIndex];
-                for (int rowIndex = 0; rowIndex < currentColumn.Count; rowIndex++)
+                ObservableCollection<string> currentRow = currentRow = Pinning.Rows[rowIndex]; 
+
+                for (int columnIndex = 0; columnIndex < currentRow.Count; columnIndex++)
                 {
                     Label currentLabel = new Label
                     {
-                        Text = currentColumn[rowIndex],
+                        Text = currentRow[columnIndex],
                         Style = pinLabelStyle
                     };
                     Frame currentFrame = new Frame
@@ -102,7 +103,7 @@ namespace Keysmith.Views.Controls
                         Style = pinFrameStyle
                     };
 
-                    int gridRowIndex = Pinning.RowCount - 1 - rowIndex; // We want row 0 at the bottom of the grid.
+                    int gridRowIndex = Pinning.Rows.Count - 1 - rowIndex; // We want row 0 at the bottom of the grid.
                     int gridColumnIndex = columnIndex + 1; // Leave space for the label.
 
                     PinningGrid.Children.Add(currentFrame, gridColumnIndex, gridRowIndex);
@@ -115,17 +116,17 @@ namespace Keysmith.Views.Controls
             return BindableProperty.Create
             (
                 nameof(Pinning),
-                typeof(PinningModel),
+                typeof(SFICPinningModel),
                 typeof(StandardPinningView),
-                new PinningModel(),
+                new SFICPinningModel(),
                 propertyChanged: OnPinningChanged
             );
         }
         protected static void OnPinningChanged(BindableObject controlObject, object oldValueObject, object newValueObject)
         {
-            StandardPinningView control = controlObject as StandardPinningView;
-            PinningModel oldValue = oldValueObject as PinningModel;
-            PinningModel newValue = newValueObject as PinningModel;
+            PinningViewControl control = controlObject as PinningViewControl;
+            SFICPinningModel oldValue = oldValueObject as SFICPinningModel;
+            SFICPinningModel newValue = newValueObject as SFICPinningModel;
 
             if (newValue != oldValue)
             { control.Refresh(); }

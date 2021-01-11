@@ -15,7 +15,7 @@
     </Shell.TitleView>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="2" >
-            <controls:StandardPinningView Pinning="{Binding Pinning}"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+            <controls:PinningViewControl Pinning="{Binding Pinning}"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
 
             <Frame Style="{StaticResource panelFrameStyle}">
                 <StackLayout Orientation="Vertical" Padding="2">
