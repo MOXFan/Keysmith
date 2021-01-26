@@ -21,9 +21,9 @@ namespace Keysmith.Views.Controls
         }
         #endregion
         #region Properties
-        public SFICPinningModel Pinning
+        public IPinningModel Pinning
         {
-            get { return (SFICPinningModel)GetValue(PinningProperty); }
+            get { return (IPinningModel)GetValue(PinningProperty); }
             set { SetValue(PinningProperty, value); }
         }
         #endregion
@@ -88,7 +88,7 @@ namespace Keysmith.Views.Controls
 
             for (int rowIndex = 0; rowIndex < Pinning.Rows.Count; rowIndex++)
             {
-                ObservableCollection<string> currentRow = currentRow = Pinning.Rows[rowIndex]; 
+                ObservableCollection<string> currentRow = Pinning.Rows[rowIndex]; 
 
                 for (int columnIndex = 0; columnIndex < currentRow.Count; columnIndex++)
                 {
@@ -116,17 +116,17 @@ namespace Keysmith.Views.Controls
             return BindableProperty.Create
             (
                 nameof(Pinning),
-                typeof(SFICPinningModel),
+                typeof(IPinningModel),
                 typeof(StandardPinningView),
-                new SFICPinningModel(),
+                new PinningModelBase(),
                 propertyChanged: OnPinningChanged
             );
         }
         protected static void OnPinningChanged(BindableObject controlObject, object oldValueObject, object newValueObject)
         {
             PinningViewControl control = controlObject as PinningViewControl;
-            SFICPinningModel oldValue = oldValueObject as SFICPinningModel;
-            SFICPinningModel newValue = newValueObject as SFICPinningModel;
+            IPinningModel oldValue = oldValueObject as IPinningModel;
+            IPinningModel newValue = newValueObject as IPinningModel;
 
             if (newValue != oldValue)
             { control.Refresh(); }
