@@ -28,8 +28,22 @@ namespace Keysmith.Models
         public bool IsEndStoppedLeft { get; private set; } = true;
         #endregion
         #region Constructors
-        public SFICPinningModel() { }
+        public SFICPinningModel() 
+        {
+            SetValues(new ObservableCollection<KeyModel>());
+            Calculate();
+        }
         public SFICPinningModel(IEnumerable<KeyModel> inputKeys, bool inputIsEndStoppedLeft = true, String inputBottomPinHeader = defaultBottomPinHeader,
+            String inputMasterPinHeader = defaultMasterPinHeader, String inputControlPinHeader = defaultControlPinHeader,
+            String inputDriverPinHeader = defaultDriverPinHeader, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
+        {
+            SetValues(inputKeys, inputIsEndStoppedLeft, inputBottomPinHeader, inputMasterPinHeader, inputControlPinHeader, inputDriverPinHeader, inputEmptyCellSpacer);
+
+            Calculate();
+        }
+        #endregion
+        #region Instance Methods
+        private void SetValues(IEnumerable<KeyModel> inputKeys, bool inputIsEndStoppedLeft = true, String inputBottomPinHeader = defaultBottomPinHeader,
             String inputMasterPinHeader = defaultMasterPinHeader, String inputControlPinHeader = defaultControlPinHeader,
             String inputDriverPinHeader = defaultDriverPinHeader, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
         {
@@ -43,10 +57,16 @@ namespace Keysmith.Models
 
             ControlKeys = GetControlKeys(Keys);
             OperatingKeys = GetOperatingKeys(Keys);
-
+        }
+        private void Calculate()
+        {
             int maxKeyLength = GetMaxKeyLength(OperatingKeys);
+
             List<List<int?>> paddedOperatingKeys = GetPaddedKeys(OperatingKeys, maxKeyLength, IsEndStoppedLeft);
             List<List<int?>> paddedControlKeys = GetPaddedKeys(ControlKeys, maxKeyLength, IsEndStoppedLeft);
+
+            if (maxKeyLength < 1)
+            { paddedOperatingKeys = GenerateEmptyPaddedKeys(7); }
 
             List<List<int?>> operatingCuts = GetSortedCuts(paddedOperatingKeys);
             List<List<int?>> controlCuts = GetSortedCuts(paddedControlKeys);
@@ -143,6 +163,18 @@ namespace Keysmith.Models
 
             foreach (KeyModel currentKey in inputOperatingKeys)
             { output.Add(PadKey(currentKey, paddingLength, isEndStoppedLeft)); }
+
+            return output;
+        }
+        private static List<List<int?>> GenerateEmptyPaddedKeys(int paddingLength)
+        {
+            List<List<int?>> output = new List<List<int?>>();
+            List<int?> currentRow = new List<int?>();
+
+            for(int columnIndex = 0; columnIndex < paddingLength;columnIndex++)
+            { currentRow.Add(null); }
+
+            output.Add(currentRow);
 
             return output;
         }
