@@ -8,7 +8,7 @@ namespace Keysmith.ViewModels
     class StandardPinningViewModel : ListViewModel<KeyModel>
     {
         #region Private Members
-        private PinningModel _pinning = new PinningModel();
+        private StandardPinningModel _pinning = new StandardPinningModel();
         private ObservableCollection<KeyModel> _selectedKeys = new ObservableCollection<KeyModel>();
         private bool _isRefreshingCurrentKeys = false;
         #endregion
@@ -22,7 +22,7 @@ namespace Keysmith.ViewModels
         #endregion
         #region Properties
         protected string SelectAddKeyRoute { get { return "//select/key"; } }
-        public PinningModel Pinning
+        public StandardPinningModel Pinning
         {
             get { return _pinning; }
             set
@@ -64,7 +64,7 @@ namespace Keysmith.ViewModels
             }
         }
         protected void UpdatePinning()
-        { Pinning = new PinningModel(SelectedKeys); }
+        { Pinning = new StandardPinningModel(SelectedKeys); }
         public void OpenAddKeySelector()
         { OpenSelectPageAsync<KeyModel>(SelectAddKeyRoute,AddKeySelectorViewModel_ItemSelected); }
         public void ClearKeys()

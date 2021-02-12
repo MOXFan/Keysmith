@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Android", "Keysmith.Android\Keysmith.Android.csproj", "{730A3BF1-4580-4512-8320-018F227313D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith", "Keysmith\Keysmith.csproj", "{3D045497-12AE-4ADE-96D1-05E1CEEA510C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Keysmith", "Keysmith\Keysmith.csproj", "{3D045497-12AE-4ADE-96D1-05E1CEEA510C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

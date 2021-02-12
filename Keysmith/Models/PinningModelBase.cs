@@ -250,6 +250,45 @@ namespace Keysmith.Models
 
             return output;
         }
+        protected static int CountRowsFromColumns(List<List<int?>> inputColumns)
+        {
+            int output = 0;
+
+            foreach (List<int?> currentColumn in inputColumns)
+            {
+                if (currentColumn.Count > output)
+                { output = currentColumn.Count; }
+            }
+
+            return output;
+        }
+        protected static ObservableCollection<String> GenerateStandardRowHeaders(int operatingRows, string inputBottomPinHeader = defaultBottomPinHeader,
+            string inputMasterPinHeader = defaultMasterPinHeader)
+        {
+            ObservableCollection<String> output = new ObservableCollection<string>();
+            if (operatingRows < 1)
+            { return output; }
+
+            output.Add(inputBottomPinHeader);
+
+            for (int rowIndex = 1; rowIndex < operatingRows; rowIndex++)
+            { output.Add(inputMasterPinHeader); }
+
+            return output;
+        }
+        protected static ObservableCollection<ObservableCollection<String>> GenerateStandardRows(List<List<int?>> inputOperatingPins,
+            String inputEmptyCellSpacer = defaultEmptyCellSpacer)
+        {
+            ObservableCollection<ObservableCollection<String>> output = new ObservableCollection<ObservableCollection<string>>();
+
+            if (inputOperatingPins.Count < 1)
+            { return output; }
+
+            for (int rowIndex = 0; rowIndex < inputOperatingPins[0].Count; rowIndex++)
+            { output.Add(GetRowAtIndex(inputOperatingPins, rowIndex, inputEmptyCellSpacer)); }
+
+            return output;
+        }
         protected static int GetMaxRowLength(ObservableCollection<ObservableCollection<String>> inputRows)
         {
             int output = 0;

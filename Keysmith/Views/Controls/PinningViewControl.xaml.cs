@@ -117,7 +117,7 @@ namespace Keysmith.Views.Controls
             (
                 nameof(Pinning),
                 typeof(IPinningModel),
-                typeof(StandardPinningView),
+                typeof(PinningViewControl),
                 new PinningModelBase(),
                 propertyChanged: OnPinningChanged
             );

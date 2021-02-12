@@ -10,11 +10,11 @@
         <Label Text="A TITLE" HeightRequest="50" WidthRequest="200"/>
     </Shell.TitleView>
     <FlyoutItem Title="Pin Cylinders" Route="pinning">
-        <Tab Title="SFIC" Route="sfic">
-            <ShellContent ContentTemplate="{DataTemplate views:SFICPinningPage}"/>
-        </Tab>
         <Tab Title="Standard" Route="standard">
             <ShellContent ContentTemplate="{DataTemplate views:StandardPinningPage}"/>
+        </Tab>
+        <Tab Title="SFIC" Route="sfic">
+            <ShellContent ContentTemplate="{DataTemplate views:SFICPinningPage}"/>
         </Tab>
     </FlyoutItem>
     <FlyoutItem Title="Edit" Route="edit">

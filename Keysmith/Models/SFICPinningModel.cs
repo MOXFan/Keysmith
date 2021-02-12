@@ -46,8 +46,8 @@ namespace Keysmith.Models
             int operatingRowCount = CountRowsFromColumns(operatingPins);
             int controlRowCount = CountRowsFromColumns(controlPins);
 
-            RowHeaders = GenerateRowHeaders(operatingRowCount, controlRowCount, BottomPinHeader, MasterPinHeader, ControlPinHeader, DriverPinHeader);
-            Rows = GenerateRows(operatingPins, controlPins, driverPins, EmptyCellSpacer);
+            RowHeaders = GenerateSFICRowHeaders(operatingRowCount, controlRowCount, BottomPinHeader, MasterPinHeader, ControlPinHeader, DriverPinHeader);
+            Rows = GenerateSFICRows(operatingPins, controlPins, driverPins, EmptyCellSpacer);
             ColumnCount = GetMaxRowLength(Rows);
         }
         #endregion
@@ -112,7 +112,7 @@ namespace Keysmith.Models
         }
         protected static ObservableCollection<String> GetDriverPins(List<int?> inputDeepestControlCuts, List<int?> inputDeepestOperatingCuts, String inputEmptyCellSpacer)
         {
-            ObservableCollection<String> output = new ObservableCollection<string>();
+            ObservableCollection<String> output = new ObservableCollection<String>();
 
             for (int columnIndex = 0; columnIndex < inputDeepestOperatingCuts.Count; columnIndex++)
             {
@@ -131,30 +131,14 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static int CountRowsFromColumns(List<List<int?>> inputColumns)
-        {
-            int output = 0;
-
-            foreach (List<int?> currentColumn in inputColumns)
-            {
-                if (currentColumn.Count > output)
-                { output = currentColumn.Count; }
-            }
-
-            return output;
-        }
-        protected static ObservableCollection<String> GenerateRowHeaders(int operatingRows, int controlRows, string inputBottomPinHeader = defaultBottomPinHeader, 
+        protected static ObservableCollection<String> GenerateSFICRowHeaders(int operatingRows, int controlRows, string inputBottomPinHeader = defaultBottomPinHeader, 
             string inputMasterPinHeader = defaultMasterPinHeader, string inputControlPinHeader = defaultControlPinHeader, 
             string inputDriverPinHeader = defaultDriverPinHeader)
         {
-            ObservableCollection<String> output = new ObservableCollection<string>();
-            if (operatingRows < 1)
+            ObservableCollection<String> output = GenerateStandardRowHeaders(operatingRows, inputBottomPinHeader, inputMasterPinHeader);
+
+            if (output.Count < 1)
             { return output; }
-
-            output.Add(inputBottomPinHeader);
-
-            for (int rowIndex = 1; rowIndex < operatingRows; rowIndex++)
-            { output.Add(inputMasterPinHeader); }
 
             for (int rowIndex = 0; rowIndex < controlRows; rowIndex++)
             { output.Add(inputControlPinHeader); }
@@ -163,16 +147,13 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static ObservableCollection<ObservableCollection<String>> GenerateRows(List<List<int?>> inputOperatingPins, List<List<int?>> inputControlPins, 
+        protected static ObservableCollection<ObservableCollection<String>> GenerateSFICRows(List<List<int?>> inputOperatingPins, List<List<int?>> inputControlPins, 
             ObservableCollection<String> inputDriverPins, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
         {
-            ObservableCollection<ObservableCollection<String>> output = new ObservableCollection<ObservableCollection<string>>();
+            ObservableCollection<ObservableCollection<String>> output = GenerateStandardRows(inputOperatingPins, inputEmptyCellSpacer);
 
-            if (inputOperatingPins.Count < 1)
+            if (output.Count < 1)
             { return output; }
-
-            for (int rowIndex = 0; rowIndex < inputOperatingPins[0].Count; rowIndex++)
-            { output.Add(GetRowAtIndex(inputOperatingPins, rowIndex, inputEmptyCellSpacer)); }
 
             if (inputControlPins.Count > 0)
             {
