@@ -8,7 +8,7 @@ using Keysmith.TaskExtensions;
 
 namespace Keysmith.Models
 {
-    class Repository<TModel> : INotifyPropertyChanged
+    class Repository<TModel> : IRepository<TModel>
         where TModel : ModelBase, new()
     {
         #region Private Members
@@ -36,14 +36,9 @@ namespace Keysmith.Models
             }
         }
         #endregion
-        #region Methods
+        #region Public Methods
         public async Task RefreshItemsAsync()
         { Items = await DB.GetItemsAsync<TModel>(); }
-        private void DB_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == typeof(TModel).ToString())
-            { RefreshItemsAsync().FireAndForget(); }
-        }
         public async Task<TModel> GetItemAsync(int id)
         { return await DB.GetItemAsync<TModel>(id); }
         public async Task<TModel> GetItemAsync(TModel item)
@@ -58,6 +53,13 @@ namespace Keysmith.Models
             { return true; }
             else
             { return false; }
+        }
+        #endregion
+        #region Private Methods
+        private void DB_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == typeof(TModel).ToString())
+            { RefreshItemsAsync().FireAndForget(); }
         }
         #endregion
         #region INotifyPropertyChanged Implementation

@@ -16,7 +16,9 @@ namespace Keysmith.Models
         private int _siteID = 0;
         private string _door = "";
         private KeywayModel _keyway = new KeywayModel();
+        private IRepository<KeywayModel> _keywayRepo = null;
         private SiteModel _site = new SiteModel();
+        private IRepository<SiteModel> _siteRepo = null;
         #endregion
         #region Properties
         public bool IsControl
@@ -112,8 +114,28 @@ namespace Keysmith.Models
             { UpdateSiteAsync(value.ID); }
         }
         [Ignore]
-        private Repository<KeywayModel> KeywayRepo { get; set; } = Repository<KeywayModel>.Instance;
-        private Repository<SiteModel> SiteRepo { get; set; } = Repository<SiteModel>.Instance;
+        private IRepository<KeywayModel> KeywayRepo
+        {
+            get
+            {
+                if(_keywayRepo == null)
+                { _keywayRepo = Repository<KeywayModel>.Instance; }
+
+                return _keywayRepo;
+            }
+            set { _keywayRepo = value; }
+        }
+        private IRepository<SiteModel> SiteRepo
+        {
+            get
+            {
+                if( _siteRepo == null)
+                { _siteRepo = Repository<SiteModel>.Instance; }
+
+                return _siteRepo;
+            }
+            set { _siteRepo = value; }
+        }
         #endregion
         #region Methods
         private async void UpdateKeywayAsync(int id)

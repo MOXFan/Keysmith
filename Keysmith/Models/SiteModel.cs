@@ -13,6 +13,7 @@ namespace Keysmith.Models
         private string _province = "";
         private string _postalCode = "";
         private CustomerModel _customer = new CustomerModel();
+        private Repository<CustomerModel> _customerRepo = null;
         #endregion
         #region Properties
         public string Name
@@ -91,7 +92,17 @@ namespace Keysmith.Models
             { UpdateCustomerAsync(value.ID); }
         }
         [Ignore]
-        private Repository<CustomerModel> CustomerRepo { get; set; } = Repository<CustomerModel>.Instance;
+        private Repository<CustomerModel> CustomerRepo
+        {
+            get
+            {
+                if (_customerRepo == null)
+                { _customerRepo = Repository<CustomerModel>.Instance; }
+
+                return _customerRepo;
+            }
+            set { _customerRepo = value; }
+        }
         #endregion
         #region Methods
         private async void UpdateCustomerAsync(int id)

@@ -57,7 +57,7 @@ namespace Keysmith.Models
         protected virtual void Initialize() { }
         #endregion
         #region Static Methods
-        protected static int GetMaxKeyLength(IEnumerable<KeyModel> inputKeys)
+        public static int GetMaxKeyLength(IEnumerable<KeyModel> inputKeys)
         {
             int outputLength = 0;
             foreach (KeyModel currentKey in inputKeys)

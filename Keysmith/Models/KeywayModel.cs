@@ -8,6 +8,7 @@ namespace Keysmith.Models
         private int _manufacturerID = 0;
         private string _name = "";
         private ManufacturerModel _manufacturer = new ManufacturerModel();
+        private Repository<ManufacturerModel> _manufacturerRepo = null;
         #endregion
         #region Properties
         public int ManufacturerID
@@ -48,7 +49,17 @@ namespace Keysmith.Models
             }
         }
         [Ignore]
-        private Repository<ManufacturerModel> ManufacturerRepo { get; set; } = Repository<ManufacturerModel>.Instance;
+        private Repository<ManufacturerModel> ManufacturerRepo
+        {
+            get
+            {
+                if (_manufacturerRepo == null)
+                { _manufacturerRepo = Repository<ManufacturerModel>.Instance; }
+
+                return _manufacturerRepo;
+            }
+            set { _manufacturerRepo = value; }
+        }
         #endregion
         #region Methods
         private async void UpdateManufacturerAsync(int id)
