@@ -67,7 +67,7 @@ namespace Keysmith.Models
             }
             return outputLength;
         }
-        protected static List<int?> PadKey(KeyModel inputKey, int paddingLength, bool isEndStoppedLeft = true)
+        public static List<int?> PadKey(KeyModel inputKey, int paddingLength, bool isEndStoppedLeft = true)
         {
             List<int?> output = new List<int?>();
             int currentKeyLength = inputKey.CutsList.Count;
@@ -97,13 +97,13 @@ namespace Keysmith.Models
             }
             else // Trim left
             {
-                for (int columnIndex = Math.Abs(paddingDelta); columnIndex < paddingLength; columnIndex++)
+                for (int columnIndex = Math.Abs(paddingDelta); columnIndex < currentKeyLength; columnIndex++)
                 { output.Add(inputKey.CutsList[columnIndex]); }
             }
 
             return output;
         }
-        protected static List<List<int?>> GetPaddedKeys(IEnumerable<KeyModel> inputOperatingKeys, int paddingLength, bool isEndStoppedLeft = true)
+        public static List<List<int?>> GetPaddedKeys(IEnumerable<KeyModel> inputOperatingKeys, int paddingLength, bool isEndStoppedLeft = true)
         {
             List<List<int?>> output = new List<List<int?>>();
 
@@ -112,7 +112,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static List<List<int?>> GenerateEmptyPaddedKeys(int paddingLength)
+        public static List<List<int?>> GenerateEmptyPaddedKeys(int paddingLength)
         {
             List<List<int?>> output = new List<List<int?>>();
             List<int?> currentRow = new List<int?>();
@@ -124,20 +124,25 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static List<int?> GetSortedCutsAtIndex(List<List<int?>> inputKeys, int index)
+        public static List<int?> GetSortedCutsAtIndex(List<List<int?>> inputKeys, int index)
         {
             List<int?> output = new List<int?>();
 
             foreach (List<int?> currentKey in inputKeys)
             {
-                output.Add(currentKey[index]);
+                int? currentCut = currentKey[index];
+
+                if (currentCut != null && output.Contains(currentCut) == false)
+                {
+                    output.Add(currentCut);
+                }
             }
 
             output.Sort();
 
             return output;
         }
-        protected static int GetMaxColumnHeight(List<List<int?>> inputColumns)
+        public static int GetMaxColumnHeight(List<List<int?>> inputColumns)
         {
             int outputHeight = 0;
 
@@ -149,9 +154,11 @@ namespace Keysmith.Models
 
             return outputHeight;
         }
-        protected static List<int?> PadColumn(List<int?> inputColumn, int paddingHeight)
+        public static List<int?> PadColumn(List<int?> inputColumn, int paddingHeight)
         {
-            if (inputColumn.Count >= paddingHeight)
+            if (inputColumn.Count > paddingHeight)
+            { throw new ArgumentOutOfRangeException(); }
+            else if (inputColumn.Count == paddingHeight)
             { return inputColumn; }
             else
             {
@@ -166,7 +173,7 @@ namespace Keysmith.Models
                 return output;
             }
         }
-        protected static List<List<int?>> PadCutColumns(List<List<int?>> inputCutColumns)
+        public static List<List<int?>> PadCutColumns(List<List<int?>> inputCutColumns)
         {
             List<List<int?>> output = new List<List<int?>>();
             int maxColumnHeight = GetMaxColumnHeight(inputCutColumns);
@@ -176,7 +183,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static List<List<int?>> GetSortedCuts(List<List<int?>> inputKeys)
+        public static List<List<int?>> GetSortedCuts(List<List<int?>> inputKeys)
         {
             List<List<int?>> output = new List<List<int?>>();
             if (inputKeys.Count == 0)
@@ -184,19 +191,40 @@ namespace Keysmith.Models
 
             int keyLength = inputKeys[0].Count;
 
+            foreach (List<int?> currentKey in inputKeys)
+            {
+                if(currentKey.Count != keyLength)
+                { throw new ArgumentException(); }
+            }
+
             for (int columnIndex = 0; columnIndex < keyLength; columnIndex++)
             { output.Add(GetSortedCutsAtIndex(inputKeys, columnIndex)); }
 
-            return PadCutColumns(output);
+            return output;
         }
-        protected static int? GetDeepestCut(List<int?> inputCutColumn)
+        public static int? GetDeepestCut(List<int?> inputCutColumn)
         {
             if (inputCutColumn.Count <= 0)
             { return null; }
-            else
-            { return inputCutColumn[inputCutColumn.Count - 1]; }
+
+            int? previousCut = inputCutColumn[0];
+
+            if (previousCut == null)
+            { throw new ArgumentException("inputCutColumn cannot contain null values."); }
+
+            for (int index = 1; index < inputCutColumn.Count; index++)
+            {
+                int? currentCut = inputCutColumn[index];
+
+                if (currentCut == null)
+                { throw new ArgumentException("inputCutColumn cannot contain null values."); }
+                else if(currentCut <= previousCut)
+                { throw new ArgumentException("inputCutColumn must be sorted."); }
+            }
+            
+            return inputCutColumn[inputCutColumn.Count - 1]; 
         }
-        protected static List<int?> GetDeepestCuts(List<List<int?>> inputCutColumns)
+        public static List<int?> GetDeepestCuts(List<List<int?>> inputCutColumns)
         {
             List<int?> output = new List<int?>();
 
@@ -205,37 +233,39 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static List<List<int?>> GetOperatingPins(List<List<int?>> inputOperatingCuts)
+        public static List<int?> CalculatePinColumn(List<int?> inputCutColumn)
         {
-            List<List<int?>> output = new List<List<int?>>();
+            List<int?> output = new List<int?>();
+            int? previousCut = null;
 
-            foreach (List<int?> currentCutColumn in inputOperatingCuts)
+            foreach (int? currentCut in inputCutColumn)
             {
-                List<int?> currentPinColumn = new List<int?>();
-                int? previousCut = null;
-
-                foreach (int? currentCut in currentCutColumn)
+                if (currentCut == null)
+                { output.Add(null); }
+                else if (previousCut == null)
                 {
-                    if (currentCut == null)
-                    { currentPinColumn.Add(null); }
-                    else if (previousCut == null)
-                    {
-                        currentPinColumn.Add(currentCut);
-                        previousCut = currentCut;
-                    }
-                    else
-                    {
-                        currentPinColumn.Add(currentCut - previousCut);
-                        previousCut = currentCut;
-                    }
+                    output.Add(currentCut);
+                    previousCut = currentCut;
                 }
-
-                output.Add(currentPinColumn);
+                else
+                {
+                    output.Add(currentCut - previousCut);
+                    previousCut = currentCut;
+                }
             }
 
             return output;
         }
-        protected static ObservableCollection<String> GetRowAtIndex(List<List<int?>> inputColumns, int index, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
+        public static List<List<int?>> GetOperatingPins(List<List<int?>> inputOperatingCuts)
+        {
+            List<List<int?>> output = new List<List<int?>>();
+
+            foreach (List<int?> currentCutColumn in inputOperatingCuts)
+            { output.Add(CalculatePinColumn(currentCutColumn)); }
+
+            return output;
+        }
+        public static ObservableCollection<String> GetRowAtIndex(List<List<int?>> inputColumns, int index, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
         {
             ObservableCollection<String> output = new ObservableCollection<string>();
 
@@ -250,7 +280,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static int CountRowsFromColumns(List<List<int?>> inputColumns)
+        public static int CountRowsFromColumns(List<List<int?>> inputColumns)
         {
             int output = 0;
 
@@ -262,7 +292,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static ObservableCollection<String> GenerateStandardRowHeaders(int operatingRows, string inputBottomPinHeader = defaultBottomPinHeader,
+        public static ObservableCollection<String> GenerateStandardRowHeaders(int operatingRows, string inputBottomPinHeader = defaultBottomPinHeader,
             string inputMasterPinHeader = defaultMasterPinHeader)
         {
             ObservableCollection<String> output = new ObservableCollection<string>();
@@ -276,7 +306,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static ObservableCollection<ObservableCollection<String>> GenerateStandardRows(List<List<int?>> inputOperatingPins,
+        public static ObservableCollection<ObservableCollection<String>> GenerateStandardRows(List<List<int?>> inputOperatingPins,
             String inputEmptyCellSpacer = defaultEmptyCellSpacer)
         {
             ObservableCollection<ObservableCollection<String>> output = new ObservableCollection<ObservableCollection<string>>();
@@ -289,7 +319,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static int GetMaxRowLength(ObservableCollection<ObservableCollection<String>> inputRows)
+        public static int GetMaxRowLength(ObservableCollection<ObservableCollection<String>> inputRows)
         {
             int output = 0;
 
