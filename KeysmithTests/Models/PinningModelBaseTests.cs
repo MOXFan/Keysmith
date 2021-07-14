@@ -297,6 +297,207 @@ namespace Keysmith.Models.Tests
             Assert.AreEqual(output, 0);
         }
         #endregion
+        #region GetSortedCuts
+        [TestMethod]
+        public void GetSortedCuts_EmptyInputReturnsEmptyOutput()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+
+            List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
+
+            Assert.AreEqual(output.Count, 0);
+        }
+        [TestMethod]
+        public void GetSortedCuts_UnequalLengthKeysThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{ 1, 2, 3, 4, 5, 6 },
+                new List<int?>{ 4, 3, 5, 1, 2 }
+            };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.GetSortedCuts(input); });
+        }
+        [TestMethod]
+        public void GetSortedCuts_ValidInputReturnsSameNumberOfColumnsAsKeyLength()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{ 1, 2, 3, 4, 5, 6 },
+                new List<int?>{ 4, 3, 5, 1, 2, 7 },
+                new List<int?>{ 1, 3, 3, null, 2, 7 },
+                new List<int?>{ 5, 1, 6, 3, 1, 2 }
+            };
+
+            List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
+
+            Assert.AreEqual(output.Count, input[0].Count);
+        }
+        #endregion
+        #region ValidateCuts
+        [TestMethod]
+        public void ValidateCuts_EmptyInputReturnsFalse()
+        {
+            List<int?> input = new List<int?>();
+
+            bool output = PinningModelBase.ValidateCuts(input);
+
+            Assert.AreEqual(false, output);
+        }
+        [TestMethod]
+        public void ValidateCuts_InputContainsNullThrowsException()
+        {
+            List<int?> input = new List<int?> { 1, 2, 3, null, 5, 6 };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_UnsortedInputThrowsException()
+        {
+            List<int?> input = new List<int?> { 2, 3, 1, 4, 6, 5 };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_ValidInputReturnsTrue()
+        {
+            List<int?> input = new List<int?> { 1, 2, 3 };
+
+            bool output = PinningModelBase.ValidateCuts(input);
+
+            Assert.AreEqual(true, output);
+        }
+        #endregion
+        #region GetDeepestCut
+        [TestMethod]
+        public void GetDeepestCut_EmptyInputReturnsNull()
+        {
+            List<int?> input = new List<int?>();
+
+            int? output = PinningModelBase.GetDeepestCut(input);
+
+            Assert.AreEqual(null, output);
+        }
+        [TestMethod]
+        public void GetDeepestCut_InputContainsNullThrowsException()
+        {
+            List<int?> input = new List<int?> { 1, 2, 3, null, 5, 6 };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.GetDeepestCut(input); });
+        }
+        [TestMethod]
+        public void GetDeepestCut_UnsortedInputThrowsException()
+        {
+            List<int?> input = new List<int?> { 2, 3, 1, 4, 6, 5 };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.GetDeepestCut(input); });
+        }
+        [TestMethod]
+        public void GetDeepestCut_ValidInputReturnsDeepestCut()
+        {
+            List<int?> input = new List<int?> { 1, 2, 3, 4, 5, 6 };
+
+            int? output = PinningModelBase.GetDeepestCut(input);
+
+            Assert.AreEqual(6, output);
+        }
+        #endregion
+        #region GetDeepestCuts
+        [TestMethod]
+        public void GetDeepestCuts_EmptyInputReturnsEmptyOutput()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+
+            List<int?> output = PinningModelBase.GetDeepestCuts(input);
+
+            Assert.AreEqual(0, output.Count);
+        }
+        [TestMethod]
+        public void GetDeepestCuts_InputListOfEmptyColumnsReturnsListOfNulls()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>(),
+                new List<int?>(),
+                new List<int?>()
+            };
+
+            List<int?> output = PinningModelBase.GetDeepestCuts(input);
+
+            Assert.AreEqual(3, output.Count);
+
+            foreach (int? currentCut in output)
+            { Assert.AreEqual(null, currentCut); }
+        }
+        [TestMethod]
+        public void GetDeepestCuts_ValidInputReturnsCorrectResults()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?> { 1, 2, 3, 4 },
+                new List<int?> { 3, 4, 5 },
+                new List<int?> { 1, 2, 3, 4, 5, 6 },
+                new List<int?> { 4, 5, 6, 7 }
+            };
+
+            List<int?> expected = new List<int?> { 4, 5, 6, 7 };
+
+            List<int?> output = PinningModelBase.GetDeepestCuts(input);
+
+            Assert.AreEqual(expected.Count, output.Count);
+
+            for (int index = 0; index < output.Count; index++)
+            {
+                int? currentExpected = expected[index];
+                int? currentOutput = output[index];
+
+                Assert.AreEqual(currentExpected, currentOutput);
+            }
+        }
+        #endregion
+        #region CalculatePinColumn
+        [TestMethod]
+        public void CalculatePinColumn_EmptyInputReturnsEmptyOutput()
+        {
+            List<int?> input = new List<int?>();
+
+            List<int?> output = PinningModelBase.CalculatePinColumn(input);
+
+            Assert.AreEqual(input.Count, output.Count);
+        }
+        [TestMethod]
+        public void CalculatePinColumn_InputContainsNullThrowsException()
+        {
+            List<int?> input = new List<int?> { 1, 2, null, 3 };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.CalculatePinColumn(input); });
+        }
+        [TestMethod]
+        public void CalculatePinColumn_UnsortedInputThrowsException()
+        {
+            List<int?> input = new List<int?> { 3, 1, 2, 4 };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.CalculatePinColumn(input); });
+        }
+        [TestMethod]
+        public void CalculatePinColumn_ValidInputReturnsCorrectOutput()
+        {
+            List<int?> input = new List<int?> { 1, 3, 4, 9 };
+            List<int?> expected = new List<int?> { 1, 2, 1, 5 };
+
+            List<int?> output = PinningModelBase.CalculatePinColumn(input);
+
+            Assert.AreEqual(expected.Count, output.Count);
+
+            for (int index = 0; index < output.Count; index++)
+            {
+                int? currentExpected = expected[index];
+                int? currentOutput = output[index];
+
+                Assert.AreEqual(currentExpected, currentOutput);
+            }
+        }
+        #endregion
         #region PadColumn
         [TestMethod]
         public void PadColumn_EmptyInputReturnsColumnOfNulls()
@@ -369,18 +570,18 @@ namespace Keysmith.Models.Tests
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => { PinningModelBase.PadColumn(input, 2); });
         }
         #endregion
-        #region PadCutColumns
+        #region PadColumns
         [TestMethod]
-        public void PadCutColumns_EmptyInputReturnsEmptyOutput()
+        public void PadColumns_EmptyInputReturnsEmptyOutput()
         {
             List<List<int?>> input = new List<List<int?>>();
 
-            List<List<int?>> output = PinningModelBase.PadCutColumns(input);
+            List<List<int?>> output = PinningModelBase.PadColumns(input);
 
             Assert.AreEqual(output.Count, 0);
         }
         [TestMethod]
-        public void PadCutColumns_ValidInputReturnsSameNumberOfColumns()
+        public void PadColumns_ValidInputReturnsSameNumberOfColumns()
         {
             List<List<int?>> input = new List<List<int?>>
             {
@@ -389,7 +590,7 @@ namespace Keysmith.Models.Tests
                 new List<int?>{ 1, 2 }
             };
 
-            List<List<int?>> output = PinningModelBase.PadCutColumns(input);
+            List<List<int?>> output = PinningModelBase.PadColumns(input);
 
             if (output.Count != input.Count)
             {
@@ -397,7 +598,7 @@ namespace Keysmith.Models.Tests
             }
         }
         [TestMethod]
-        public void PadCutColumns_ValidInputReturnsColumnsOfSameHeight()
+        public void PadColumns_ValidInputReturnsColumnsOfSameHeight()
         {
             List<List<int?>> input = new List<List<int?>>
             {
@@ -406,7 +607,7 @@ namespace Keysmith.Models.Tests
                 new List<int?>{ 1, 2 }
             };
 
-            List<List<int?>> output = PinningModelBase.PadCutColumns(input);
+            List<List<int?>> output = PinningModelBase.PadColumns(input);
 
             for (int index = 0; index < output.Count; index++)
             {
@@ -417,168 +618,47 @@ namespace Keysmith.Models.Tests
             }
         }
         #endregion
-        #region GetSortedCuts
+        #region GetOperatingPins
         [TestMethod]
-        public void GetSortedCuts_EmptyInputReturnsEmptyOutput()
-        {
-            List<List<int?>> input = new List<List<int?>>();
-
-            List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
-
-            Assert.AreEqual(output.Count, 0);
-        }
-        [TestMethod]
-        public void GetSortedCuts_UnequalLengthKeysThrowsException()
+        public void GetOperatingPins_ValidInputReturnsColumnsOfAllEqualHeight()
         {
             List<List<int?>> input = new List<List<int?>>
             {
                 new List<int?>{ 1, 2, 3, 4, 5, 6 },
-                new List<int?>{ 4, 3, 5, 1, 2 }
+                new List<int?>{ 3, 4, 5 },
+                new List<int?>{ 6, 7, 8, 9 },
+                new List<int?>{ 2, 3 }
             };
 
-            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.GetSortedCuts(input); });
-        }
-        [TestMethod]
-        public void GetSortedCuts_ValidInputReturnsSameNumberOfColumnsAsKeyLength()
-        {
-            List<List<int?>> input = new List<List<int?>>
+            List<List<int?>> output = PinningModelBase.GetOperatingPins(input);
+
+            int firstColumnHeight = output[0].Count;
+
+            for (int index = 1; index < output.Count; index++)
             {
-                new List<int?>{ 1, 2, 3, 4, 5, 6 },
-                new List<int?>{ 4, 3, 5, 1, 2, 7 },
-                new List<int?>{ 1, 3, 3, null, 2, 7 },
-                new List<int?>{ 5, 1, 6, 3, 1, 2 }
-            };
+                List<int?> currentColumn = output[index];
 
-            List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
-
-            Assert.AreEqual(output.Count, input[0].Count);
-        }
-        #endregion
-        #region GetDeepestCut
-        [TestMethod]
-        public void GetDeepestCut_EmptyListReturnsNull()
-        {
-            List<int?> input = new List<int?>();
-
-            int? output = PinningModelBase.GetDeepestCut(input);
-
-            Assert.AreEqual(null, output);
-        }
-        [TestMethod]
-        public void GetDeepestCut_ListContainsNullThrowsException()
-        {
-            List<int?> input = new List<int?> { 1, 2, 3, null, 5, 6 };
-
-            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.GetDeepestCut(input); });
-        }
-        [TestMethod]
-        public void GetDeepestCut_InputOutOfOrderThrowsException()
-        {
-            List<int?> input = new List<int?> { 2, 3, 1, 4, 6, 5 };
-
-            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.GetDeepestCut(input); });
-        }
-        [TestMethod]
-        public void GetDeepestCut_ValidInputReturnsDeepestCut()
-        {
-            List<int?> input = new List<int?> { 1, 2, 3, 4, 5, 6 };
-
-            int? output = PinningModelBase.GetDeepestCut(input);
-
-            Assert.AreEqual(6, output);
-        }
-        #endregion
-        #region GetDeepestCuts
-        [TestMethod]
-        public void GetDeepestCuts_EmptyInputReturnsEmptyList()
-        {
-            List<List<int?>> input = new List<List<int?>>();
-
-            List<int?> output = PinningModelBase.GetDeepestCuts(input);
-
-            Assert.AreEqual(0, output.Count);
-        }
-        [TestMethod]
-        public void GetDeepestCuts_InputListOfEmptyColumnsReturnsListOfNulls()
-        {
-            List<List<int?>> input = new List<List<int?>>
-            {
-                new List<int?>(),
-                new List<int?>(),
-                new List<int?>()
-            };
-
-            List<int?> output = PinningModelBase.GetDeepestCuts(input);
-
-            Assert.AreEqual(3, output.Count);
-
-            foreach (int? currentCut in output)
-            { Assert.AreEqual(null, currentCut); }
-        }
-        [TestMethod]
-        public void GetDeepestCuts_ValidInputReturnsCorrectResults()
-        {
-            List<List<int?>> input = new List<List<int?>>
-            {
-                new List<int?> { 1, 2, 3, 4 },
-                new List<int?> { 3, 4, 5 },
-                new List<int?> { 1, 2, 3, 4, 5, 6 },
-                new List<int?> { 4, 5, 6, 7 }
-            };
-
-            List<int?> expected = new List<int?> { 4, 5, 6, 7 };
-
-            List<int?> output = PinningModelBase.GetDeepestCuts(input);
-
-            Assert.AreEqual(expected.Count, output.Count);
-
-            for (int index = 0; index < output.Count; index++)
-            {
-                int? currentExpected = expected[index];
-                int? currentOutput = output[index];
-
-                Assert.AreEqual(currentExpected, currentOutput);
+                if (currentColumn.Count != firstColumnHeight)
+                { Assert.Fail($"Column at index {index} had height {currentColumn.Count} instead of expected {firstColumnHeight}"); }
             }
         }
-        #endregion
-        #region CalculatePinColumn
         [TestMethod]
-        public void CalculatePinColumn_EmptyInputReturnsEmptyOutput()
+        public void GetOperatingPins_ValidInputReturnsSameNumberOfColumnsAsInput()
         {
-            List<int?> input = new List<int?>();
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{ 1, 2, 3, 4, 5, 6 },
+                new List<int?>{ 3, 4, 5 },
+                new List<int?>{ 6, 7, 8, 9 },
+                new List<int?>{ 2, 3 }
+            };
 
-            List<int?> output = PinningModelBase.CalculatePinColumn(input);
+            List<List<int?>> output = PinningModelBase.GetOperatingPins(input);
 
             Assert.AreEqual(input.Count, output.Count);
         }
-        [TestMethod]
-        public void CalculatePinColumn_InputContainingNullsThrowsException()
-        { }
         #endregion
-        #region GetOperatingPins
-        //[TestMethod]
-        //public void GetSortedCuts_ValidInputReturnsColumnsOfAllEqualHeight()
-        //{
-        //    List<List<int?>> input = new List<List<int?>>
-        //    {
-        //        new List<int?>{ 1, 2, 3, 4, 5, 6 },
-        //        new List<int?>{ 4, 3, 5, 1, 2, 7 },
-        //        new List<int?>{ 1, 3, 3, null, 2, 7 },
-        //        new List<int?>{ 5, 1, 6, 3, 1, 2 }
-        //    };
-
-        //    List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
-
-        //    int firstColumnHeight = output[0].Count;
-
-        //    for (int index = 1; index < output.Count; index++)
-        //    {
-        //        List<int?> currentColumn = output[index];
-
-        //        if (currentColumn.Count != firstColumnHeight)
-        //        { Assert.Fail($"Column at index {index} had height {currentColumn.Count} instead of expected {firstColumnHeight}"); }
-        //    }
-        //}
+        #region GetRowAtIndex
         #endregion
     }
 }
