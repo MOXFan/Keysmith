@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Keysmith.Models
 {
-    public class PinningModelBase: ModelBase, IPinningModel
+    public class PinningModelBase : ModelBase, IPinningModel
     {
         #region Constant Values
         protected const string defaultDriverPinHeader = "Driver Pins:";
@@ -164,7 +164,7 @@ namespace Keysmith.Models
 
             foreach (List<int?> currentKey in inputKeys)
             {
-                if(currentKey.Count != keyLength)
+                if (currentKey.Count != keyLength)
                 { throw new ArgumentException(); }
             }
 
@@ -197,10 +197,10 @@ namespace Keysmith.Models
         }
         public static int? GetDeepestCut(List<int?> inputCutColumn)
         {
-            if(ValidateCuts(inputCutColumn) == false)
+            if (ValidateCuts(inputCutColumn) == false)
             { return null; }
-            
-            return inputCutColumn[inputCutColumn.Count - 1]; 
+
+            return inputCutColumn[inputCutColumn.Count - 1];
         }
         public static List<int?> GetDeepestCuts(List<List<int?>> inputCutColumns)
         {
@@ -216,7 +216,7 @@ namespace Keysmith.Models
             List<int?> output = new List<int?>();
             int? previousCut = null;
 
-            if(ValidateCuts(inputCutColumn) == false)
+            if (ValidateCuts(inputCutColumn) == false)
             { return output; }
 
             foreach (int? currentCut in inputCutColumn)
@@ -277,9 +277,19 @@ namespace Keysmith.Models
         {
             ObservableCollection<String> output = new ObservableCollection<string>();
 
+            int maxColumnHeight = GetMaxColumnHeight(inputColumns);
+
+            if (index < 0 || index >= maxColumnHeight || inputColumns.Count <= 0)
+            { throw new IndexOutOfRangeException(); }
+
             foreach (List<int?> currentColumn in inputColumns)
             {
-                int? currentPin = currentColumn[index];
+                int? currentPin;
+                if (index < currentColumn.Count)
+                { currentPin = currentColumn[index]; }
+                else
+                { currentPin = null; }
+
                 if (currentPin == null)
                 { output.Add(inputEmptyCellSpacer); }
                 else
@@ -318,11 +328,12 @@ namespace Keysmith.Models
             String inputEmptyCellSpacer = defaultEmptyCellSpacer)
         {
             ObservableCollection<ObservableCollection<String>> output = new ObservableCollection<ObservableCollection<string>>();
+            int rowCount = CountRowsFromColumns(inputOperatingPins);
 
             if (inputOperatingPins.Count < 1)
             { return output; }
 
-            for (int rowIndex = 0; rowIndex < inputOperatingPins[0].Count; rowIndex++)
+            for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             { output.Add(GetRowAtIndex(inputOperatingPins, rowIndex, inputEmptyCellSpacer)); }
 
             return output;

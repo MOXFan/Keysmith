@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Keysmith.Models.Tests
 {
@@ -352,6 +353,13 @@ namespace Keysmith.Models.Tests
             Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
         }
         [TestMethod]
+        public void ValidateCuts_InputFirstItemNullThrowsException()
+        {
+            List<int?> input = new List<int?> { null, 2, 3, 4, 5, 6 };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
         public void ValidateCuts_UnsortedInputThrowsException()
         {
             List<int?> input = new List<int?> { 2, 3, 1, 4, 6, 5 };
@@ -366,6 +374,13 @@ namespace Keysmith.Models.Tests
             bool output = PinningModelBase.ValidateCuts(input);
 
             Assert.AreEqual(true, output);
+        }
+        [TestMethod]
+        public void ValidateCuts_NullInputThrowsException()
+        {
+            List<int?> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.ValidateCuts(input); });
         }
         #endregion
         #region GetDeepestCut
@@ -659,6 +674,248 @@ namespace Keysmith.Models.Tests
         }
         #endregion
         #region GetRowAtIndex
+        [TestMethod]
+        public void GetRowAtIndex_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetRowAtIndex(input, 0); });
+        }
+        [TestMethod]
+        public void GetRowAtIndex_IndexOutOfRangeHighThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{1, 2, 3},
+                new List<int?>{4, 5, 6},
+                new List<int?>{7, 8, 9, 10}
+            };
+
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, 5); });
+        }
+        [TestMethod]
+        public void GetRowAtIndex_IndexOutOfRangeLowThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{1, 2, 3},
+                new List<int?>{4, 5, 6},
+                new List<int?>{7, 8, 9, 10}
+            };
+
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, -1); });
+        }
+        [TestMethod]
+        public void GetRowAtIndex_EmptyInputThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, 0); });
+        }
+        [TestMethod]
+        public void GetRowAtIndex_ValidInputWithCompleteRowReturnsCorrectResult()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{1, 2, 3},
+                new List<int?>{4, 5, 6},
+                new List<int?>{7, 8, 9, 10}
+            };
+
+            int inputIndex = 0;
+
+            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { "1", "4", "7" };
+
+            ObservableCollection<string> output = PinningModelBase.GetRowAtIndex(input, inputIndex);
+
+            if (output.Count != expectedOutput.Count)
+            { Assert.Fail(); }
+
+            for (int index = 0; index < output.Count; index++)
+            {
+                if (output[index] != expectedOutput[index])
+                { Assert.Fail(); }
+            }
+        }
+        [TestMethod]
+        public void GetRowAtIndex_ValidInputWithInompleteRowReturnsResultWithCorrectSpacer()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{1, 2, 3},
+                new List<int?>{4, 5, 6},
+                new List<int?>{7, 8, 9, 10}
+            };
+
+            int inputIndex = 3;
+            string inputSpacer = "X";
+
+            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { "X", "X", "10" };
+
+            ObservableCollection<string> output = PinningModelBase.GetRowAtIndex(input, inputIndex, inputSpacer);
+
+            if (output.Count != expectedOutput.Count)
+            { Assert.Fail(); }
+
+            for (int index = 0; index < output.Count; index++)
+            {
+                if (output[index] != expectedOutput[index])
+                { Assert.Fail(); }
+            }
+        }
+        #endregion
+        #region CountRowsFromColumns
+        [TestMethod]
+        public void CountRowsFromColumns_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.CountRowsFromColumns(input); });
+        }
+        [TestMethod]
+        public void CountRowsFromColumns_EmptyInputReturnsZero()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+            int expectedOutput = 0;
+
+            int output = PinningModelBase.CountRowsFromColumns(input);
+
+            Assert.AreEqual(expectedOutput, output);
+        }
+        [TestMethod]
+        public void CountRowsFromColumns_ValidInputReturnsCorrectCount()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{1, 2, 3},
+                new List<int?>{4, 5, 6},
+                new List<int?>{7, 8, 9, 10}
+            };
+
+            int expectedOutput = 4;
+
+            int output = PinningModelBase.CountRowsFromColumns(input);
+
+            Assert.AreEqual(expectedOutput, output);
+        }
+        #endregion
+        #region GenerateStandardRowHeaders
+        [TestMethod]
+        public void GenerateStandardRowHeaders_ZeroInputCountReturnsEmptyOutput()
+        {
+            int inputCount = 0;
+            ObservableCollection<string> expectedOutput = new ObservableCollection<string>();
+
+            ObservableCollection<string> output = PinningModelBase.GenerateStandardRowHeaders(inputCount);
+
+            Assert.AreEqual(expectedOutput.Count, output.Count);
+        }
+        [TestMethod]
+        public void GenerateStandardRowHeaders_OneInputCountReturnsBottomHeaderOnly()
+        {
+            int inputCount = 1;
+            string inputBottomPinHeader = "bottomHeader";
+            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { inputBottomPinHeader };
+
+            ObservableCollection<string> output = PinningModelBase.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader);
+
+            if (output.Count != expectedOutput.Count)
+            { Assert.Fail(); }
+
+            for (int index = 0; index < output.Count; index++)
+            {
+                if (output[index] != expectedOutput[index])
+                { Assert.Fail(); }
+            }
+        }
+        [TestMethod]
+        public void GenerateStandardRowHeaders_FourInputCountReturnsBottomHeaderAndThreeMasterHeaders()
+        {
+            int inputCount = 4;
+            string inputBottomPinHeader = "bottomHeader";
+            string inputMasterPinHeader = "masterHeader";
+            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { inputBottomPinHeader, inputMasterPinHeader, inputMasterPinHeader, inputMasterPinHeader };
+
+            ObservableCollection<string> output = PinningModelBase.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader, inputMasterPinHeader);
+
+            if (output.Count != expectedOutput.Count)
+            { Assert.Fail(); }
+
+            for (int index = 0; index < output.Count; index++)
+            {
+                if (output[index] != expectedOutput[index])
+                { Assert.Fail(); }
+            }
+        }
+        #endregion
+        #region GenerateStandardRows
+        [TestMethod]
+        public void GenerateStandardRows_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GenerateStandardRows(input); });
+        }
+        [TestMethod]
+        public void GenerateStandardRows_EmptyInputReturnsEmptyOutput()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+            int expectedOutputCount = 0;
+
+            ObservableCollection<ObservableCollection<string>> output = PinningModelBase.GenerateStandardRows(input);
+
+            Assert.AreEqual(expectedOutputCount, output.Count);
+        }
+        [TestMethod]
+        public void GenerateStandardRows_ValidInputReturnsCorrectNumberOfRows()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?>{1, 2, 3},
+                new List<int?>{4, 5, 6},
+                new List<int?>{7, 8, 9, 10}
+            };
+
+            int expectedOutputCount = 4;
+
+            ObservableCollection<ObservableCollection<string>> output = PinningModelBase.GenerateStandardRows(input);
+
+            Assert.AreEqual(expectedOutputCount, output.Count);
+        }
+        #endregion
+        #region GetMaxRowLength
+        [TestMethod]
+        public void GetMaxRowLength_NullInputThrowsException()
+        {
+            ObservableCollection<ObservableCollection<string>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetMaxRowLength(input); });
+        }
+        [TestMethod]
+        public void GetMaxRowLength_EmptyInputReturnsZeroRowLength()
+        {
+            ObservableCollection<ObservableCollection<string>> input = new ObservableCollection<ObservableCollection<string>>();
+            int expectedOutput = 0;
+
+            int output = PinningModelBase.GetMaxRowLength(input);
+
+            Assert.AreEqual(expectedOutput, output);
+        }
+        [TestMethod]
+        public void GetMaxRowLength_ValidInputReturnsCorrectRowLength()
+        {
+            ObservableCollection<ObservableCollection<string>> input = new ObservableCollection<ObservableCollection<string>>
+            {
+                new ObservableCollection<string>{ "1", "2" },
+                new ObservableCollection<string>{ "A", "B", "C", "D" },
+                new ObservableCollection<string>{ "X", "Y", "Z" }
+            };
+            int expectedOutput = 4;
+
+            int output = PinningModelBase.GetMaxRowLength(input);
+
+            Assert.AreEqual(expectedOutput, output);
+        }
         #endregion
     }
 }
