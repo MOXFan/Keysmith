@@ -1,31 +1,41 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Keysmith.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Keysmith.Models.Tests
+namespace KeysmithTests.Models
 {
     [TestClass()]
     public class PinningModelBaseTests
     {
         #region GetMaxKeyLength
         [TestMethod]
+        public void GetMaxKeyLength_NullInputThrowsException()
+        {
+            List<KeyModel> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(()=> { PinningModelBase.GetMaxKeyLength(input); });
+        }
+        [TestMethod]
         public void GetMaxKeyLength_EmptyListReturnsZero()
         {
             List<KeyModel> input = new List<KeyModel>();
+            int expected = 0;
 
             int output = PinningModelBase.GetMaxKeyLength(input);
 
-            Assert.AreEqual(output, 0);
+            Assert.AreEqual(expected, output);
         }
         [TestMethod]
         public void GetMaxKeyLength_ListOfBlankKeysReturnsZero()
         {
             List<KeyModel> input = new List<KeyModel> { new KeyModel(), new KeyModel(), new KeyModel() };
+            int expected = 0;
 
             int output = PinningModelBase.GetMaxKeyLength(input);
 
-            Assert.AreEqual(output, 0);
+            Assert.AreEqual(expected, output);
         }
         [TestMethod]
         public void GetMaxKeyLength_ValidListReturnsLongestKeyLength()
@@ -37,58 +47,56 @@ namespace Keysmith.Models.Tests
                 new KeyModel(){ Cuts = "123456" },
                 new KeyModel(){ Cuts = "12345" }
             };
+            int expected = 6;
 
             int output = PinningModelBase.GetMaxKeyLength(input);
 
-            Assert.AreEqual(output, 6);
+            Assert.AreEqual(expected, output);
         }
         #endregion
         #region PadKey
         [TestMethod]
+        public void PadKey_NullInputThrowsException()
+        {
+            KeyModel input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.PadKey(input, 0); });
+        }
+        [TestMethod]
         public void PadKey_ZeroPaddingLengthReturnsEmptyList()
         {
             KeyModel input = new KeyModel() { Cuts = "123456" };
+            List<int?> expected = new List<int?>();
 
             List<int?> output = PinningModelBase.PadKey(input, 0);
 
-            if (output.Count != 0)
-            { Assert.Fail($"Output has length {output.Count} instead of zero."); }
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
         public void PadKey_PaddingLengthEqualsKeyLengthReturnsUnmodifiedCuts()
         {
             KeyModel input = new KeyModel() { Cuts = "123456" };
-
             List<int?> expected = new List<int?> { 1, 2, 3, 4, 5, 6 };
 
             List<int?> output = PinningModelBase.PadKey(input, 6);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail("Output has wrong length."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expected[index])
-                { Assert.Fail($"Output has wrong value at index {index}"); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadKey_EndStoppedLeftTrimsRight()
         {
             KeyModel input = new KeyModel() { Cuts = "123456" };
-
             List<int?> expected = new List<int?> { 1, 2, 3 };
 
             List<int?> output = PinningModelBase.PadKey(input, 3, true);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail("Output has wrong length."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expected[index])
-                { Assert.Fail($"Output has wrong value at index {index}"); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadKey_EndStoppedRightTrimsLeft()
@@ -99,14 +107,10 @@ namespace Keysmith.Models.Tests
 
             List<int?> output = PinningModelBase.PadKey(input, 3, false);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail("Output has wrong length."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expected[index])
-                { Assert.Fail($"Output has wrong value at index {index}"); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadKey_EndStoppedLeftPadsRight()
@@ -117,14 +121,10 @@ namespace Keysmith.Models.Tests
 
             List<int?> output = PinningModelBase.PadKey(input, 9, true);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail("Output has wrong length."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expected[index])
-                { Assert.Fail($"Output has wrong value at index {index}"); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadKey_EndStoppedRightPadsLeft()
@@ -135,29 +135,32 @@ namespace Keysmith.Models.Tests
 
             List<int?> output = PinningModelBase.PadKey(input, 9, false);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail("Output has wrong length."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expected[index])
-                { Assert.Fail($"Output has wrong value at index {index}"); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         #endregion
         #region GetPaddedKeys
         [TestMethod]
+        public void GetPaddedKeys_NullInputThrowsException()
+        {
+            List<KeyModel> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetPaddedKeys(input, 0); });
+        }
+        [TestMethod]
         public void GetPaddedKeys_EmptyInputListReturnsEmptyOutputList()
         {
             List<KeyModel> input = new List<KeyModel>();
+            List<List<int?>> expected = new List<List<int?>>();
 
             List<List<int?>> output = PinningModelBase.GetPaddedKeys(input, 5);
 
-            if (output.Count != 0)
-            { Assert.Fail($"Output count was {output.Count} instead of zero."); }
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
-        public void GetPaddedKeys_ReturnedKeysAllHaveSameLength()
+        public void GetPaddedKeys_ReturnedKeysAllHaveSpecifiedLength()
         {
             List<KeyModel> input = new List<KeyModel>
             {
@@ -165,50 +168,62 @@ namespace Keysmith.Models.Tests
                 new KeyModel(){ Cuts = "1234" },
                 new KeyModel(){ Cuts = "12345678" }
             };
+            int inputLength = 6;
 
-            List<List<int?>> output = PinningModelBase.GetPaddedKeys(input, 6);
+            List<List<int?>> output = PinningModelBase.GetPaddedKeys(input, inputLength);
 
-            for (int index = 0; index < output.Count; index++)
-            {
-                int currentLength = output[index].Count;
-
-                if (currentLength != 6)
-                { Assert.Fail($"Result at index {index} had length {currentLength} instead of 6."); }
-            }
+            foreach (List<int?> currentKey in output)
+            { Assert.AreEqual(inputLength, currentKey.Count); }
         }
         #endregion
         #region GenerateEmptyPaddedKeys
         [TestMethod]
         public void GenerateEmptyPaddedKeys_ZeroLengthReturnsListOfOneEmptyKey()
         {
-            List<List<int?>> output = PinningModelBase.GenerateEmptyPaddedKeys(0);
+            int input = 0;
+            List<List<int?>> expected = new List<List<int?>> { new List<int?>() };
 
-            if (output.Count != 1)
-            { Assert.Fail($"Output contained {output.Count} records instead of one."); }
-            else if (output[0].Count != 0)
-            { Assert.Fail($"Output key was length {output[0].Count} instead of zero."); }
+            List<List<int?>> output = PinningModelBase.GenerateEmptyPaddedKeys(input);
+
+            Assert.AreEqual(expected.Count, output.Count);
+            
+            for(int index = 0; index < output.Count;index++)
+            { Assert.AreEqual(expected[index].Count, output[index].Count); }
         }
         [TestMethod]
-        public void GenerateEmptyPaddedKeys_ReturnsOneKeyOfSpecifiedLengthAllNull()
+        public void GenerateEmptyPaddedKeys_NonzeroInputReturnsOneKeyOfSpecifiedLengthAllNull()
         {
-            List<List<int?>> output = PinningModelBase.GenerateEmptyPaddedKeys(6);
-
-            if (output.Count != 1)
-            { Assert.Fail($"Output contained {output.Count} records instead of one."); }
-
-            List<int?> currentKey = output[0];
-
-            if (currentKey.Count != 6)
-            { Assert.Fail($"Output key was length {output[0].Count} instead of six."); }
-
-            for (int index = 0; index < currentKey.Count; index++)
+            int input = 6;
+            List<List<int?>> expected = new List<List<int?>>
             {
-                if (currentKey[index] != null)
-                { Assert.Fail($"Cut at index {index} was {currentKey[index]} instead of null."); }
+                new List<int?>{ null, null, null, null, null, null }
+            };
+
+            List<List<int?>> output = PinningModelBase.GenerateEmptyPaddedKeys(input);
+
+            Assert.AreEqual(expected.Count, output.Count);
+
+            for(int keyIndex = 0; keyIndex < output.Count;keyIndex++)
+            {
+                List<int?> currentExpectedKey = expected[keyIndex];
+                List<int?> currentOutputKey = expected[keyIndex];
+
+                Assert.AreEqual(currentExpectedKey.Count, currentOutputKey.Count);
+
+                for (int cutIndex = 0; cutIndex < currentOutputKey.Count; cutIndex++)
+                { Assert.AreEqual(currentExpectedKey[cutIndex], currentOutputKey[cutIndex]); }
             }
         }
         #endregion
         #region GetSortedCutsAtIndex
+        [TestMethod]
+        public void GetSortedCutsAtIndex_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+            int inputIndex = 0;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetSortedCutsAtIndex(input, inputIndex); });
+        }
         [TestMethod]
         public void GetSortedCutsAtIndex_ValidIndexReturnsProperlySortedCutsWithNullsAndDuplicatesOmitted()
         {
@@ -223,22 +238,15 @@ namespace Keysmith.Models.Tests
                 new List<int?> { null, null, 3, null },
                 new List<int?> { null, null, 7, null }
             };
-
+            int inputIndex = 2;
             List<int?> expected = new List<int?> { 1, 3, 4, 5, 7 };
 
-            List<int?> output = PinningModelBase.GetSortedCutsAtIndex(input, 2);
+            List<int?> output = PinningModelBase.GetSortedCutsAtIndex(input, inputIndex);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail($"Output had length {output.Count} instead of {expected.Count}."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                int? currentOutput = output[index];
-                int? currentExpected = expected[index];
-
-                if (currentOutput != currentExpected)
-                { Assert.Fail($"Output value {currentOutput} at index {index} did not match expected value {currentExpected}."); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void GetSortedCutsAtIndex_IndexOutOfRangeThrowsException()
@@ -252,13 +260,18 @@ namespace Keysmith.Models.Tests
                 new List<int?> { null, null, 7, null },
             };
 
-            List<int?> output = PinningModelBase.GetSortedCutsAtIndex(input, 2);
-
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => { PinningModelBase.GetSortedCutsAtIndex(input, -1); });
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => { PinningModelBase.GetSortedCutsAtIndex(input, 7); });
         }
         #endregion
         #region GetMaxColumnHeight
+        [TestMethod]
+        public void GetMaxColumnHeight_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetMaxColumnHeight(input); });
+        }
         [TestMethod]
         public void GetMaxColumnHeight_ValidDataReturnsTallestColumnHeight()
         {
@@ -269,19 +282,21 @@ namespace Keysmith.Models.Tests
                 new List<int?>{ 1, 2, 3, 4, 5 },
                 new List<int?>{ 1, 2 }
             };
+            int expected = 5;
 
             int output = PinningModelBase.GetMaxColumnHeight(input);
 
-            Assert.AreEqual(output, 5);
+            Assert.AreEqual(expected, output);
         }
         [TestMethod]
         public void GetMaxColumnHeight_EmptyInputReturnsZeroHeight()
         {
             List<List<int?>> input = new List<List<int?>>();
+            int expected = 0;
 
             int output = PinningModelBase.GetMaxColumnHeight(input);
 
-            Assert.AreEqual(output, 0);
+            Assert.AreEqual(expected, output);
         }
         [TestMethod]
         public void GetMaxColumnHeight_InputListOfEmptyListsReturnsZeroHeight()
@@ -292,21 +307,30 @@ namespace Keysmith.Models.Tests
                 new List<int?>(),
                 new List<int?>()
             };
+            int expected = 0;
 
             int output = PinningModelBase.GetMaxColumnHeight(input);
 
-            Assert.AreEqual(output, 0);
+            Assert.AreEqual(expected, output);
         }
         #endregion
         #region GetSortedCuts
         [TestMethod]
+        public void GetSortedCuts_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetSortedCuts(input); });
+        }
+        [TestMethod]
         public void GetSortedCuts_EmptyInputReturnsEmptyOutput()
         {
             List<List<int?>> input = new List<List<int?>>();
+            List<List<int?>> expected = new List<List<int?>>();
 
             List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
 
-            Assert.AreEqual(output.Count, 0);
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
         public void GetSortedCuts_UnequalLengthKeysThrowsException()
@@ -320,7 +344,7 @@ namespace Keysmith.Models.Tests
             Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.GetSortedCuts(input); });
         }
         [TestMethod]
-        public void GetSortedCuts_ValidInputReturnsSameNumberOfColumnsAsKeyLength()
+        public void GetSortedCuts_ValidInputReturnsCorrectOutput()
         {
             List<List<int?>> input = new List<List<int?>>
             {
@@ -329,13 +353,40 @@ namespace Keysmith.Models.Tests
                 new List<int?>{ 1, 3, 3, null, 2, 7 },
                 new List<int?>{ 5, 1, 6, 3, 1, 2 }
             };
+            List<List<int?>> expected = new List<List<int?>>
+            {
+                new List<int?>{ 1, 4, 5 },
+                new List<int?>{ 1, 2, 3 },
+                new List<int?>{ 3, 5, 6 },
+                new List<int?>{ 1, 3, 4 },
+                new List<int?>{ 1, 2, 5 },
+                new List<int?>{ 2, 6, 7 }
+            };
 
             List<List<int?>> output = PinningModelBase.GetSortedCuts(input);
 
-            Assert.AreEqual(output.Count, input[0].Count);
+            Assert.AreEqual(expected.Count, output.Count);
+
+            for (int columnIndex = 0; columnIndex < output.Count; columnIndex++)
+            {
+                List<int?> currentExpectedColumn = expected[columnIndex];
+                List<int?> currentOutputColumn = output[columnIndex];
+
+                Assert.AreEqual(currentExpectedColumn.Count, currentOutputColumn.Count);
+
+                for (int rowIndex = 0; rowIndex < currentOutputColumn.Count; rowIndex++)
+                { Assert.AreEqual(currentExpectedColumn[rowIndex], currentOutputColumn[rowIndex]); }
+            }
         }
         #endregion
         #region ValidateCuts
+        [TestMethod]
+        public void ValidateCuts_NullInputThrowsException()
+        {
+            List<int?> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
         [TestMethod]
         public void ValidateCuts_EmptyInputReturnsFalse()
         {
@@ -343,7 +394,7 @@ namespace Keysmith.Models.Tests
 
             bool output = PinningModelBase.ValidateCuts(input);
 
-            Assert.AreEqual(false, output);
+            Assert.IsFalse(output);
         }
         [TestMethod]
         public void ValidateCuts_InputContainsNullThrowsException()
@@ -373,17 +424,17 @@ namespace Keysmith.Models.Tests
 
             bool output = PinningModelBase.ValidateCuts(input);
 
-            Assert.AreEqual(true, output);
-        }
-        [TestMethod]
-        public void ValidateCuts_NullInputThrowsException()
-        {
-            List<int?> input = null;
-
-            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.ValidateCuts(input); });
+            Assert.IsTrue(output);
         }
         #endregion
         #region GetDeepestCut
+        [TestMethod]
+        public void GetDeepestCut_NullInputThrowsException()
+        {
+            List<int?> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetDeepestCut(input); });
+        }
         [TestMethod]
         public void GetDeepestCut_EmptyInputReturnsNull()
         {
@@ -391,7 +442,7 @@ namespace Keysmith.Models.Tests
 
             int? output = PinningModelBase.GetDeepestCut(input);
 
-            Assert.AreEqual(null, output);
+            Assert.IsNull(output);
         }
         [TestMethod]
         public void GetDeepestCut_InputContainsNullThrowsException()
@@ -411,21 +462,30 @@ namespace Keysmith.Models.Tests
         public void GetDeepestCut_ValidInputReturnsDeepestCut()
         {
             List<int?> input = new List<int?> { 1, 2, 3, 4, 5, 6 };
+            int expected = 6;
 
             int? output = PinningModelBase.GetDeepestCut(input);
 
-            Assert.AreEqual(6, output);
+            Assert.AreEqual(expected, output);
         }
         #endregion
         #region GetDeepestCuts
         [TestMethod]
+        public void GetDeepestCuts_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetDeepestCuts(input); });
+        }
+        [TestMethod]
         public void GetDeepestCuts_EmptyInputReturnsEmptyOutput()
         {
             List<List<int?>> input = new List<List<int?>>();
+            List<int?> expected = new List<int?>();
 
             List<int?> output = PinningModelBase.GetDeepestCuts(input);
 
-            Assert.AreEqual(0, output.Count);
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
         public void GetDeepestCuts_InputListOfEmptyColumnsReturnsListOfNulls()
@@ -436,13 +496,14 @@ namespace Keysmith.Models.Tests
                 new List<int?>(),
                 new List<int?>()
             };
+            List<int?> expected = new List<int?> { null, null, null };
 
             List<int?> output = PinningModelBase.GetDeepestCuts(input);
 
-            Assert.AreEqual(3, output.Count);
+            Assert.AreEqual(expected.Count, output.Count);
 
-            foreach (int? currentCut in output)
-            { Assert.AreEqual(null, currentCut); }
+            for (int index = 0; index < output.Count; index++)
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void GetDeepestCuts_ValidInputReturnsCorrectResults()
@@ -454,7 +515,6 @@ namespace Keysmith.Models.Tests
                 new List<int?> { 1, 2, 3, 4, 5, 6 },
                 new List<int?> { 4, 5, 6, 7 }
             };
-
             List<int?> expected = new List<int?> { 4, 5, 6, 7 };
 
             List<int?> output = PinningModelBase.GetDeepestCuts(input);
@@ -462,23 +522,26 @@ namespace Keysmith.Models.Tests
             Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                int? currentExpected = expected[index];
-                int? currentOutput = output[index];
-
-                Assert.AreEqual(currentExpected, currentOutput);
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         #endregion
         #region CalculatePinColumn
         [TestMethod]
+        public void CalculatePinColumn_NullInputThrowsException()
+        {
+            List<int?> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.CalculatePinColumn(input); });
+        }
+        [TestMethod]
         public void CalculatePinColumn_EmptyInputReturnsEmptyOutput()
         {
             List<int?> input = new List<int?>();
+            List<int?> expected = new List<int?>();
 
             List<int?> output = PinningModelBase.CalculatePinColumn(input);
 
-            Assert.AreEqual(input.Count, output.Count);
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
         public void CalculatePinColumn_InputContainsNullThrowsException()
@@ -505,98 +568,89 @@ namespace Keysmith.Models.Tests
             Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                int? currentExpected = expected[index];
-                int? currentOutput = output[index];
-
-                Assert.AreEqual(currentExpected, currentOutput);
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         #endregion
         #region PadColumn
         [TestMethod]
+        public void PadColumn_NullInputThrowsException()
+        {
+            List<int?> input = null;
+            int inputPaddingHeight = 5;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.PadColumn(input, inputPaddingHeight); });
+        }
+        [TestMethod]
         public void PadColumn_EmptyInputReturnsColumnOfNulls()
         {
             List<int?> input = new List<int?>();
-
+            int inputPaddingHeight = 5;
             List<int?> expected = new List<int?> { null, null, null, null, null };
 
-            List<int?> output = PinningModelBase.PadColumn(input, 5);
+            List<int?> output = PinningModelBase.PadColumn(input, inputPaddingHeight);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail($"Output had length {output.Count} instead of {expected.Count}."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                int? currentOutput = output[index];
-                int? currentExpected = expected[index];
-
-                if (currentOutput != currentExpected)
-                { Assert.Fail($"Output value {currentOutput} at index {index} did not match expected value of {currentExpected}."); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadColumn_PaddingHeightEqualsInputHeightReturnsUnchangedInput()
         {
             List<int?> input = new List<int?> { 1, 2, 3, 4, 5 };
-
+            int inputPaddingHeight = 5;
             List<int?> expected = input;
 
-            List<int?> output = PinningModelBase.PadColumn(input, 5);
+            List<int?> output = PinningModelBase.PadColumn(input, inputPaddingHeight);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail($"Output had length {output.Count} instead of {expected.Count}."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                int? currentOutput = output[index];
-                int? currentExpected = expected[index];
-
-                if (currentOutput != currentExpected)
-                { Assert.Fail($"Output value {currentOutput} at index {index} did not match expected value of {currentExpected}."); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadColumn_PaddingHeightGreaterThanInputReturnsPaddedInput()
         {
             List<int?> input = new List<int?> { 1, 2, 3, 4, 5 };
-
+            int inputPaddingHeight = 7;
             List<int?> expected = new List<int?> { 1, 2, 3, 4, 5, null, null };
 
-            List<int?> output = PinningModelBase.PadColumn(input, 7);
+            List<int?> output = PinningModelBase.PadColumn(input, inputPaddingHeight);
 
-            if (output.Count != expected.Count)
-            { Assert.Fail($"Output had length {output.Count} instead of {expected.Count}."); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                int? currentOutput = output[index];
-                int? currentExpected = expected[index];
-
-                if (currentOutput != currentExpected)
-                { Assert.Fail($"Output value {currentOutput} at index {index} did not match expected value of {currentExpected}."); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void PadColumn_PaddingHeightLessThanInputThrowsException()
         {
             List<int?> input = new List<int?> { 1, 2, 3, 4, 5 };
+            int inputPaddingHeight = 2;
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => { PinningModelBase.PadColumn(input, 2); });
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => { PinningModelBase.PadColumn(input, inputPaddingHeight); });
         }
         #endregion
         #region PadColumns
         [TestMethod]
+        public void PadColumns_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.PadColumns(input); });
+        }
+        [TestMethod]
         public void PadColumns_EmptyInputReturnsEmptyOutput()
         {
             List<List<int?>> input = new List<List<int?>>();
+            List<List<int?>> expected = new List<List<int?>>();
 
             List<List<int?>> output = PinningModelBase.PadColumns(input);
 
-            Assert.AreEqual(output.Count, 0);
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
-        public void PadColumns_ValidInputReturnsSameNumberOfColumns()
+        public void PadColumns_ValidInputReturnsCorrectOutput()
         {
             List<List<int?>> input = new List<List<int?>>
             {
@@ -604,73 +658,82 @@ namespace Keysmith.Models.Tests
                 new List<int?>{ 1, 2, 3, 4, 5 },
                 new List<int?>{ 1, 2 }
             };
-
-            List<List<int?>> output = PinningModelBase.PadColumns(input);
-
-            if (output.Count != input.Count)
+            List<List<int?>> expected = new List<List<int?>>
             {
-                Assert.Fail($"Output had {output.Count} columns instead of expected {input.Count}.");
-            }
-        }
-        [TestMethod]
-        public void PadColumns_ValidInputReturnsColumnsOfSameHeight()
-        {
-            List<List<int?>> input = new List<List<int?>>
-            {
-                new List<int?>{ 1, 2, 3 },
+                new List<int?>{ 1, 2, 3, null, null },
                 new List<int?>{ 1, 2, 3, 4, 5 },
-                new List<int?>{ 1, 2 }
+                new List<int?>{ 1, 2, null, null, null }
             };
 
             List<List<int?>> output = PinningModelBase.PadColumns(input);
 
-            for (int index = 0; index < output.Count; index++)
-            {
-                List<int?> currentColumn = output[index];
+            Assert.AreEqual(expected.Count, output.Count);
 
-                if (currentColumn.Count != 5)
-                { Assert.Fail($"Column at index {index} was height {currentColumn.Count} instead of expected 5."); }
+            for(int columnIndex = 0;columnIndex<output.Count;columnIndex++)
+            {
+                List<int?> currentExpectedColumn = expected[columnIndex];
+                List<int?> currentOutputColumn = output[columnIndex];
+
+                Assert.AreEqual(currentExpectedColumn.Count, currentOutputColumn.Count);
+
+                for (int rowIndex = 0; rowIndex < currentOutputColumn.Count; rowIndex++)
+                { Assert.AreEqual(currentExpectedColumn[rowIndex], currentOutputColumn[rowIndex]); }
             }
         }
         #endregion
         #region GetOperatingPins
         [TestMethod]
-        public void GetOperatingPins_ValidInputReturnsColumnsOfAllEqualHeight()
+        public void GetOperatingPins_NullInputThrowsException()
         {
-            List<List<int?>> input = new List<List<int?>>
-            {
-                new List<int?>{ 1, 2, 3, 4, 5, 6 },
-                new List<int?>{ 3, 4, 5 },
-                new List<int?>{ 6, 7, 8, 9 },
-                new List<int?>{ 2, 3 }
-            };
+            List<List<int?>> input = null;
 
-            List<List<int?>> output = PinningModelBase.GetOperatingPins(input);
-
-            int firstColumnHeight = output[0].Count;
-
-            for (int index = 1; index < output.Count; index++)
-            {
-                List<int?> currentColumn = output[index];
-
-                if (currentColumn.Count != firstColumnHeight)
-                { Assert.Fail($"Column at index {index} had height {currentColumn.Count} instead of expected {firstColumnHeight}"); }
-            }
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetOperatingPins(input); });
         }
         [TestMethod]
-        public void GetOperatingPins_ValidInputReturnsSameNumberOfColumnsAsInput()
+        public void GetOperatingPins_EmptyInputReturnsEmptyOutput()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+            List<List<int?>> expected = new List<List<int?>>();
+
+            List<List<int?>> output = PinningModelBase.GetOperatingPins(input);
+
+            Assert.AreEqual(expected.Count, output.Count);
+        }
+        [TestMethod]
+        public void GetOperatingPins_ValidInputReturnsCorrectOutput()
         {
             List<List<int?>> input = new List<List<int?>>
             {
                 new List<int?>{ 1, 2, 3, 4, 5, 6 },
                 new List<int?>{ 3, 4, 5 },
                 new List<int?>{ 6, 7, 8, 9 },
-                new List<int?>{ 2, 3 }
+                new List<int?>{ 2, 3 },
+                new List<int?>{ 2, 4, 8, 9 }
+            };
+            List<List<int?>> expected = new List<List<int?>>
+            {
+                new List<int?>{ 1, 1, 1, 1, 1, 1 },
+                new List<int?>{ 3, 1, 1, null, null, null },
+                new List<int?>{ 6, 1, 1, 1, null, null },
+                new List<int?>{ 2, 1, null, null, null, null },
+                new List<int?>{ 2, 2, 4, 1, null, null }
             };
 
             List<List<int?>> output = PinningModelBase.GetOperatingPins(input);
 
-            Assert.AreEqual(input.Count, output.Count);
+            Assert.AreEqual(expected.Count, output.Count);
+
+            for (int columnIndex = 0; columnIndex < output.Count; columnIndex++)
+            {
+                List<int?> currentExpectedColumn = expected[columnIndex];
+                List<int?> currentOutputColumn = output[columnIndex];
+
+                Assert.AreEqual(currentExpectedColumn.Count, currentOutputColumn.Count);
+
+                for (int rowIndex = 0; rowIndex < currentOutputColumn.Count; rowIndex++)
+                { Assert.AreEqual(currentExpectedColumn[rowIndex], currentOutputColumn[rowIndex]); }
+            }
+
         }
         #endregion
         #region GetRowAtIndex
@@ -678,11 +741,12 @@ namespace Keysmith.Models.Tests
         public void GetRowAtIndex_NullInputThrowsException()
         {
             List<List<int?>> input = null;
+            int inputIndex = 0;
 
-            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetRowAtIndex(input, 0); });
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetRowAtIndex(input, inputIndex); });
         }
         [TestMethod]
-        public void GetRowAtIndex_IndexOutOfRangeHighThrowsException()
+        public void GetRowAtIndex_IndexOutOfRangeThrowsException()
         {
             List<List<int?>> input = new List<List<int?>>
             {
@@ -690,27 +754,19 @@ namespace Keysmith.Models.Tests
                 new List<int?>{4, 5, 6},
                 new List<int?>{7, 8, 9, 10}
             };
+            int inputIndexLow = -1;
+            int inputIndexHigh = 5;
 
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, 5); });
-        }
-        [TestMethod]
-        public void GetRowAtIndex_IndexOutOfRangeLowThrowsException()
-        {
-            List<List<int?>> input = new List<List<int?>>
-            {
-                new List<int?>{1, 2, 3},
-                new List<int?>{4, 5, 6},
-                new List<int?>{7, 8, 9, 10}
-            };
-
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, -1); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, inputIndexLow); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, inputIndexHigh); });
         }
         [TestMethod]
         public void GetRowAtIndex_EmptyInputThrowsException()
         {
             List<List<int?>> input = new List<List<int?>>();
+            int inputIndex = 0;
 
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, 0); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { PinningModelBase.GetRowAtIndex(input, inputIndex); });
         }
         [TestMethod]
         public void GetRowAtIndex_ValidInputWithCompleteRowReturnsCorrectResult()
@@ -721,21 +777,15 @@ namespace Keysmith.Models.Tests
                 new List<int?>{4, 5, 6},
                 new List<int?>{7, 8, 9, 10}
             };
-
             int inputIndex = 0;
-
-            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { "1", "4", "7" };
+            ObservableCollection<string> expected = new ObservableCollection<string> { "1", "4", "7" };
 
             ObservableCollection<string> output = PinningModelBase.GetRowAtIndex(input, inputIndex);
 
-            if (output.Count != expectedOutput.Count)
-            { Assert.Fail(); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expectedOutput[index])
-                { Assert.Fail(); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void GetRowAtIndex_ValidInputWithInompleteRowReturnsResultWithCorrectSpacer()
@@ -750,18 +800,14 @@ namespace Keysmith.Models.Tests
             int inputIndex = 3;
             string inputSpacer = "X";
 
-            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { "X", "X", "10" };
+            ObservableCollection<string> expected = new ObservableCollection<string> { "X", "X", "10" };
 
             ObservableCollection<string> output = PinningModelBase.GetRowAtIndex(input, inputIndex, inputSpacer);
 
-            if (output.Count != expectedOutput.Count)
-            { Assert.Fail(); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expectedOutput[index])
-                { Assert.Fail(); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         #endregion
         #region CountRowsFromColumns
@@ -776,11 +822,11 @@ namespace Keysmith.Models.Tests
         public void CountRowsFromColumns_EmptyInputReturnsZero()
         {
             List<List<int?>> input = new List<List<int?>>();
-            int expectedOutput = 0;
+            int expected = 0;
 
             int output = PinningModelBase.CountRowsFromColumns(input);
 
-            Assert.AreEqual(expectedOutput, output);
+            Assert.AreEqual(expected, output);
         }
         [TestMethod]
         public void CountRowsFromColumns_ValidInputReturnsCorrectCount()
@@ -804,29 +850,25 @@ namespace Keysmith.Models.Tests
         public void GenerateStandardRowHeaders_ZeroInputCountReturnsEmptyOutput()
         {
             int inputCount = 0;
-            ObservableCollection<string> expectedOutput = new ObservableCollection<string>();
+            ObservableCollection<string> expected = new ObservableCollection<string>();
 
             ObservableCollection<string> output = PinningModelBase.GenerateStandardRowHeaders(inputCount);
 
-            Assert.AreEqual(expectedOutput.Count, output.Count);
+            Assert.AreEqual(expected.Count, output.Count);
         }
         [TestMethod]
         public void GenerateStandardRowHeaders_OneInputCountReturnsBottomHeaderOnly()
         {
             int inputCount = 1;
             string inputBottomPinHeader = "bottomHeader";
-            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { inputBottomPinHeader };
+            ObservableCollection<string> expected = new ObservableCollection<string> { inputBottomPinHeader };
 
             ObservableCollection<string> output = PinningModelBase.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader);
 
-            if (output.Count != expectedOutput.Count)
-            { Assert.Fail(); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expectedOutput[index])
-                { Assert.Fail(); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         [TestMethod]
         public void GenerateStandardRowHeaders_FourInputCountReturnsBottomHeaderAndThreeMasterHeaders()
@@ -834,18 +876,14 @@ namespace Keysmith.Models.Tests
             int inputCount = 4;
             string inputBottomPinHeader = "bottomHeader";
             string inputMasterPinHeader = "masterHeader";
-            ObservableCollection<string> expectedOutput = new ObservableCollection<string> { inputBottomPinHeader, inputMasterPinHeader, inputMasterPinHeader, inputMasterPinHeader };
+            ObservableCollection<string> expected = new ObservableCollection<string> { inputBottomPinHeader, inputMasterPinHeader, inputMasterPinHeader, inputMasterPinHeader };
 
             ObservableCollection<string> output = PinningModelBase.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader, inputMasterPinHeader);
 
-            if (output.Count != expectedOutput.Count)
-            { Assert.Fail(); }
+            Assert.AreEqual(expected.Count, output.Count);
 
             for (int index = 0; index < output.Count; index++)
-            {
-                if (output[index] != expectedOutput[index])
-                { Assert.Fail(); }
-            }
+            { Assert.AreEqual(expected[index], output[index]); }
         }
         #endregion
         #region GenerateStandardRows
@@ -860,11 +898,11 @@ namespace Keysmith.Models.Tests
         public void GenerateStandardRows_EmptyInputReturnsEmptyOutput()
         {
             List<List<int?>> input = new List<List<int?>>();
-            int expectedOutputCount = 0;
+            int expectedCount = 0;
 
             ObservableCollection<ObservableCollection<string>> output = PinningModelBase.GenerateStandardRows(input);
 
-            Assert.AreEqual(expectedOutputCount, output.Count);
+            Assert.AreEqual(expectedCount, output.Count);
         }
         [TestMethod]
         public void GenerateStandardRows_ValidInputReturnsCorrectNumberOfRows()
@@ -876,11 +914,11 @@ namespace Keysmith.Models.Tests
                 new List<int?>{7, 8, 9, 10}
             };
 
-            int expectedOutputCount = 4;
+            int expectedCount = 4;
 
             ObservableCollection<ObservableCollection<string>> output = PinningModelBase.GenerateStandardRows(input);
 
-            Assert.AreEqual(expectedOutputCount, output.Count);
+            Assert.AreEqual(expectedCount, output.Count);
         }
         #endregion
         #region GetMaxRowLength
@@ -895,11 +933,11 @@ namespace Keysmith.Models.Tests
         public void GetMaxRowLength_EmptyInputReturnsZeroRowLength()
         {
             ObservableCollection<ObservableCollection<string>> input = new ObservableCollection<ObservableCollection<string>>();
-            int expectedOutput = 0;
+            int expected = 0;
 
             int output = PinningModelBase.GetMaxRowLength(input);
 
-            Assert.AreEqual(expectedOutput, output);
+            Assert.AreEqual(expected, output);
         }
         [TestMethod]
         public void GetMaxRowLength_ValidInputReturnsCorrectRowLength()
@@ -910,11 +948,11 @@ namespace Keysmith.Models.Tests
                 new ObservableCollection<string>{ "A", "B", "C", "D" },
                 new ObservableCollection<string>{ "X", "Y", "Z" }
             };
-            int expectedOutput = 4;
+            int expected = 4;
 
             int output = PinningModelBase.GetMaxRowLength(input);
 
-            Assert.AreEqual(expectedOutput, output);
+            Assert.AreEqual(expected, output);
         }
         #endregion
     }

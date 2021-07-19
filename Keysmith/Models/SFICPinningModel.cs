@@ -52,7 +52,7 @@ namespace Keysmith.Models
         }
         #endregion
         #region Static Methods
-        protected static ObservableCollection<KeyModel> GetControlKeys(IEnumerable<KeyModel> inputKeys)
+        public static ObservableCollection<KeyModel> GetControlKeys(IEnumerable<KeyModel> inputKeys)
         {
             ObservableCollection<KeyModel> outputKeys = new ObservableCollection<KeyModel>();
 
@@ -64,7 +64,7 @@ namespace Keysmith.Models
 
             return outputKeys;
         }
-        protected static ObservableCollection<KeyModel> GetOperatingKeys(IEnumerable<KeyModel> inputKeys)
+        public static ObservableCollection<KeyModel> GetOperatingKeys(IEnumerable<KeyModel> inputKeys)
         {
             ObservableCollection<KeyModel> outputKeys = new ObservableCollection<KeyModel>();
 
@@ -76,7 +76,7 @@ namespace Keysmith.Models
 
             return outputKeys;
         }
-        protected static List<List<int?>> GetControlPins(List<List<int?>> inputControlCuts, List<int?> inputDeepestOperatingCuts)
+        public static List<List<int?>> GetControlPins(List<List<int?>> inputControlCuts, List<int?> inputDeepestOperatingCuts)
         {
             List<List<int?>> output = new List<List<int?>>();
             if (inputControlCuts.Count < 1)
@@ -110,7 +110,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static ObservableCollection<String> GetDriverPins(List<int?> inputDeepestControlCuts, List<int?> inputDeepestOperatingCuts, String inputEmptyCellSpacer)
+        public static ObservableCollection<String> GetDriverPins(List<int?> inputDeepestControlCuts, List<int?> inputDeepestOperatingCuts, String inputEmptyCellSpacer)
         {
             ObservableCollection<String> output = new ObservableCollection<String>();
 
@@ -131,7 +131,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static ObservableCollection<String> GenerateSFICRowHeaders(int operatingRows, int controlRows, string inputBottomPinHeader = defaultBottomPinHeader, 
+        public static ObservableCollection<String> GenerateSFICRowHeaders(int operatingRows, int controlRows, string inputBottomPinHeader = defaultBottomPinHeader, 
             string inputMasterPinHeader = defaultMasterPinHeader, string inputControlPinHeader = defaultControlPinHeader, 
             string inputDriverPinHeader = defaultDriverPinHeader)
         {
@@ -147,7 +147,7 @@ namespace Keysmith.Models
 
             return output;
         }
-        protected static ObservableCollection<ObservableCollection<String>> GenerateSFICRows(List<List<int?>> inputOperatingPins, List<List<int?>> inputControlPins, 
+        public static ObservableCollection<ObservableCollection<String>> GenerateSFICRows(List<List<int?>> inputOperatingPins, List<List<int?>> inputControlPins, 
             ObservableCollection<String> inputDriverPins, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
         {
             ObservableCollection<ObservableCollection<String>> output = GenerateStandardRows(inputOperatingPins, inputEmptyCellSpacer);
