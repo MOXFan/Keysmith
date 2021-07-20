@@ -397,18 +397,29 @@ namespace KeysmithTests.Models
             Assert.IsFalse(output);
         }
         [TestMethod]
+        public void ValidateCuts_InputContainsOnlySingleNullThrowsException()
+        {
+            List<int?> input = new List<int?> { null };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
         public void ValidateCuts_InputContainsNullThrowsException()
         {
             List<int?> input = new List<int?> { 1, 2, 3, null, 5, 6 };
 
             Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
-        }
-        [TestMethod]
-        public void ValidateCuts_InputFirstItemNullThrowsException()
-        {
-            List<int?> input = new List<int?> { null, 2, 3, 4, 5, 6 };
+
+            input = new List<int?> { null, 2, 3, 4, 5, 6 };
 
             Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_InputContainsDuplicatesThrowsException()
+        {
+            List<int?> input = new List<int?> { 1, 2, 3, 3, 5, 6 };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.ValidateCuts(input); });
         }
         [TestMethod]
         public void ValidateCuts_UnsortedInputThrowsException()
@@ -425,6 +436,80 @@ namespace KeysmithTests.Models
             bool output = PinningModelBase.ValidateCuts(input);
 
             Assert.IsTrue(output);
+        }
+        #endregion
+        #region ValidateCuts_ListOverload
+        [TestMethod]
+        public void ValidateCuts_ListOverload_NullInputThrowsException()
+        {
+            List<List<int?>> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_ListOverload_EmptyInputReturnsFalse()
+        {
+            List<List<int?>> input = new List<List<int?>>();
+
+            Assert.IsFalse(PinningModelBase.ValidateCuts(input));
+        }
+        [TestMethod]
+        public void ValidateCuts_ListOverload_InputContainsNullThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?> { 1, 2, 3 },
+                new List<int?> { 4, null, 6 },
+                new List<int?> { 7, 8, 9 }
+            };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
+
+            input = new List<List<int?>>
+            {
+                new List<int?> { null, 2, 3 },
+                new List<int?> { 4, 5, 6 },
+                new List<int?> { 7, 8, 9 }
+            };
+
+            Assert.ThrowsException<ArgumentNullException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_ListOverload_InputContainsDuplicatesThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?> { 1, 2, 3 },
+                new List<int?> { 4, 5, 5 },
+                new List<int?> { 7, 8, 9 }
+            };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_ListOverload_UnsortedInputThrowsException()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?> { 1, 2, 3 },
+                new List<int?> { 4, 5, 6 },
+                new List<int?> { 7, 8, 9 },
+                new List<int?> { 2, 3, 1, 4, 6, 5 }
+            };
+
+            Assert.ThrowsException<ArgumentException>(() => { PinningModelBase.ValidateCuts(input); });
+        }
+        [TestMethod]
+        public void ValidateCuts_ListOverload_ValidInputReturnsTrue()
+        {
+            List<List<int?>> input = new List<List<int?>>
+            {
+                new List<int?> { 1, 2, 3 },
+                new List<int?> { 4, 5, 6 },
+                new List<int?> { 7, 8, 9 }
+            };
+
+            Assert.IsTrue(PinningModelBase.ValidateCuts(input));
         }
         #endregion
         #region GetDeepestCut

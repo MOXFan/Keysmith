@@ -78,37 +78,55 @@ namespace Keysmith.Models
         }
         public static List<List<int?>> GetControlPins(List<List<int?>> inputControlCuts, List<int?> inputDeepestOperatingCuts)
         {
-            List<List<int?>> output = new List<List<int?>>();
-            if (inputControlCuts.Count < 1)
-            { return output; }
+            List<List<int?>> outputColumns = new List<List<int?>>();
+            if (inputDeepestOperatingCuts.Count < 1 || ValidateCuts(inputControlCuts) == false)
+            { return outputColumns; }
 
-            for (int columnIndex = 0; columnIndex < inputDeepestOperatingCuts.Count; columnIndex++)
+            int maxColumnHeight = GetMaxColumnHeight(inputControlCuts);
+            int columnCount = inputDeepestOperatingCuts.Count;
+            if (inputControlCuts.Count > inputDeepestOperatingCuts.Count)
+            { columnCount = inputControlCuts.Count; }
+
+            for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
             {
                 List<int?> currentPinColumn = new List<int?>();
-                List<int?> currentCutColumn = inputControlCuts[columnIndex];
-                int? currentDeepestOperatingCut = inputDeepestOperatingCuts[columnIndex];
+                List<int?> currentCutColumn = null;
+
+                if (columnIndex < inputControlCuts.Count)
+                { currentCutColumn = inputControlCuts[columnIndex]; }
+
+                int? currentDeepestOperatingCut = null;
+
+                if (columnIndex < inputDeepestOperatingCuts.Count)
+                { currentDeepestOperatingCut = inputDeepestOperatingCuts[columnIndex]; }
+
                 int? previousCut = null;
 
-                foreach (int? currentCut in currentCutColumn)
+                for (int rowIndex = 0; rowIndex < maxColumnHeight; rowIndex++)
                 {
-                    if (currentCut == null || currentDeepestOperatingCut == null)
+                    if (currentCutColumn == null || rowIndex >= currentCutColumn.Count)
                     { currentPinColumn.Add(null); }
-                    else if (previousCut == null)
-                    {
-                        currentPinColumn.Add(currentCut + 10 - currentDeepestOperatingCut);
-                        previousCut = currentCut; 
-                    }
                     else
                     {
-                        currentPinColumn.Add(currentCut - previousCut);
+                        int? currentCut = null;
+                        if (rowIndex < currentCutColumn.Count)
+                        { currentCut = currentCutColumn[rowIndex]; }
+
+                        if (currentCut == null || currentDeepestOperatingCut == null)
+                        { currentPinColumn.Add(null); }
+                        else if (previousCut == null)
+                        { currentPinColumn.Add(currentCut + 10 - currentDeepestOperatingCut); }
+                        else
+                        { currentPinColumn.Add(currentCut - previousCut); }
+
                         previousCut = currentCut;
                     }
                 }
 
-                output.Add(currentPinColumn);
+                outputColumns.Add(currentPinColumn);
             }
 
-            return output;
+            return outputColumns;
         }
         public static ObservableCollection<String> GetDriverPins(List<int?> inputDeepestControlCuts, List<int?> inputDeepestOperatingCuts, String inputEmptyCellSpacer)
         {

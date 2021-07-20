@@ -174,26 +174,39 @@ namespace Keysmith.Models
             return output;
         }
         public static bool ValidateCuts(List<int?> inputCutColumn)
-        {
+        { // Returns false only on empty input, throws exception for invalid input. (Empty input is normal use case, invalid input means bad code.)
             if (inputCutColumn.Count <= 0)
             { return false; }
-
-            int? previousCut = inputCutColumn[0];
-
-            if (previousCut == null)
+            else if(inputCutColumn[0] == null)
             { throw new ArgumentNullException("inputCutColumn cannot contain null values."); }
 
             for (int index = 1; index < inputCutColumn.Count; index++)
             {
+                int? previousCut = inputCutColumn[index - 1];
                 int? currentCut = inputCutColumn[index];
 
-                if (currentCut == null)
+                if (currentCut == null || previousCut == null)
                 { throw new ArgumentNullException("inputCutColumn cannot contain null values."); }
                 else if (currentCut <= previousCut)
                 { throw new ArgumentException("inputCutColumn must be sorted."); }
             }
 
             return true;
+        }
+        public static bool ValidateCuts(List<List<int?>> inputCutsColumn)
+        {
+            if(inputCutsColumn.Count < 1)
+            { return false; }
+
+            bool result = false;
+
+            foreach(List<int?> currentColumn in inputCutsColumn)
+            {
+                if(ValidateCuts(currentColumn) == true)
+                { result = true; }
+            }
+
+            return result;
         }
         public static int? GetDeepestCut(List<int?> inputCutColumn)
         {
