@@ -506,7 +506,8 @@ namespace KeysmithTests.Models
             {
                 new List<int?> { 1, 2, 3 },
                 new List<int?> { 4, 5, 6 },
-                new List<int?> { 7, 8, 9 }
+                new List<int?> { 7, 8, 9 },
+                new List<int?>()
             };
 
             Assert.IsTrue(PinningModelBase.ValidateCuts(input));
