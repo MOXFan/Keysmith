@@ -25,12 +25,24 @@ namespace Keysmith.Models
             ControlKeys = GetControlKeys(Keys);
             OperatingKeys = GetOperatingKeys(Keys);
 
-            int maxKeyLength = GetMaxKeyLength(OperatingKeys);
+            int controlKeyLength = GetMinKeyLength(ControlKeys);
+            int operatingKeyLength = GetMinKeyLength(OperatingKeys);
 
-            List<List<int?>> paddedOperatingKeys = GetPaddedKeys(OperatingKeys, maxKeyLength, IsEndStoppedLeft);
-            List<List<int?>> paddedControlKeys = GetPaddedKeys(ControlKeys, maxKeyLength, IsEndStoppedLeft);
+            int minKeyLength = 0;
 
-            if (maxKeyLength < 1)
+            if (operatingKeyLength > 0 && controlKeyLength > 0 && operatingKeyLength <= controlKeyLength)
+            { minKeyLength = operatingKeyLength; }
+            else if (operatingKeyLength > 0 && controlKeyLength > 0 && operatingKeyLength > controlKeyLength)
+            { minKeyLength = controlKeyLength; }
+            else if (operatingKeyLength > 0)
+            { minKeyLength = operatingKeyLength; }
+            else if (controlKeyLength > 0)
+            { minKeyLength = controlKeyLength; }
+
+            List<List<int?>> paddedOperatingKeys = GetPaddedKeys(OperatingKeys, minKeyLength, IsEndStoppedLeft);
+            List<List<int?>> paddedControlKeys = GetPaddedKeys(ControlKeys, minKeyLength, IsEndStoppedLeft);
+
+            if (minKeyLength < 1)
             { paddedOperatingKeys = GenerateEmptyPaddedKeys(7); }
 
             List<List<int?>> operatingCuts = GetSortedCuts(paddedOperatingKeys);

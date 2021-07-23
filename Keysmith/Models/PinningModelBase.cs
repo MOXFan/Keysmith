@@ -67,6 +67,18 @@ namespace Keysmith.Models
             }
             return outputLength;
         }
+        public static int GetMinKeyLength(IEnumerable<KeyModel> inputKeys)
+        {
+            int outputLength = 0;
+            foreach (KeyModel currentKey in inputKeys)
+            {
+                if (outputLength <= 0 && currentKey.Cuts.Length > 0)
+                { outputLength = currentKey.Cuts.Length; }
+                else if (currentKey.Cuts.Length < outputLength && currentKey.Cuts.Length != 0)
+                { outputLength = currentKey.Cuts.Length; }
+            }
+            return outputLength;
+        }
         public static List<int?> PadKey(KeyModel inputKey, int paddingLength, bool isEndStoppedLeft = true)
         {
             List<int?> output = new List<int?>();

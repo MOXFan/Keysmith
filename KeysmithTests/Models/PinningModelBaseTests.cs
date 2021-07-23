@@ -54,6 +54,67 @@ namespace KeysmithTests.Models
             Assert.AreEqual(expected, output);
         }
         #endregion
+        #region GetMinKeyLength
+        [TestMethod]
+        public void GetMinKeyLength_NullInputThrowsException()
+        {
+            List<KeyModel> input = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => { PinningModelBase.GetMinKeyLength(input); });
+        }
+        [TestMethod]
+        public void GetMinKeyLength_EmptyListReturnsZero()
+        {
+            List<KeyModel> input = new List<KeyModel>();
+            int expected = 0;
+
+            int output = PinningModelBase.GetMinKeyLength(input);
+
+            Assert.AreEqual(expected, output);
+        }
+        [TestMethod]
+        public void GetMinKeyLength_ListOfBlankKeysReturnsZero()
+        {
+            List<KeyModel> input = new List<KeyModel> { new KeyModel(), new KeyModel(), new KeyModel() };
+            int expected = 0;
+
+            int output = PinningModelBase.GetMinKeyLength(input);
+
+            Assert.AreEqual(expected, output);
+        }
+        [TestMethod]
+        public void GetMinKeyLength_EmptyKeysIgnoredUnlessAllKeysEmpty()
+        {
+            List<KeyModel> input = new List<KeyModel>
+            {
+                new KeyModel(){ Cuts = "123456" },
+                new KeyModel(){ Cuts = "123" },
+                new KeyModel(),
+                new KeyModel(){ Cuts = "12345" }
+            };
+            int expected = 3;
+
+            int output = PinningModelBase.GetMinKeyLength(input);
+
+            Assert.AreEqual(expected, output);
+        }
+        [TestMethod]
+        public void GetMinKeyLength_ValidListReturnsShortestKeyLength()
+        {
+            List<KeyModel> input = new List<KeyModel>
+            {
+                new KeyModel(){ Cuts = "123456" },
+                new KeyModel(){ Cuts = "123" },
+                new KeyModel(){ Cuts = "1234" },
+                new KeyModel(){ Cuts = "12345" }
+            };
+            int expected = 3;
+
+            int output = PinningModelBase.GetMinKeyLength(input);
+
+            Assert.AreEqual(expected, output);
+        }
+        #endregion
         #region PadKey
         [TestMethod]
         public void PadKey_NullInputThrowsException()

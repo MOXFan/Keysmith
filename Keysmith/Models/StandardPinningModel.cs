@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Keysmith.Models
 {
@@ -18,11 +17,11 @@ namespace Keysmith.Models
         #region Instance Methods
         protected override void Initialize()
         {
-            int maxKeyLength = GetMaxKeyLength(Keys);
+            int minKeyLength = GetMinKeyLength(Keys);
 
-            List<List<int?>> paddedKeys = GetPaddedKeys(Keys, maxKeyLength, IsEndStoppedLeft);
+            List<List<int?>> paddedKeys = GetPaddedKeys(Keys, minKeyLength, IsEndStoppedLeft);
 
-            if (maxKeyLength < 1)
+            if (minKeyLength < 1)
             { paddedKeys = GenerateEmptyPaddedKeys(6); }
 
             List<List<int?>> cuts = GetSortedCuts(paddedKeys);
