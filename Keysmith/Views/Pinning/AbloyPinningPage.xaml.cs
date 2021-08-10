@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 namespace Keysmith.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class StandardPinningPage : ContentPage
+    public partial class AbloyPinningPage : ContentPage
     {
-        public StandardPinningPage()
+        public AbloyPinningPage()
         {
             InitializeComponent();
         }

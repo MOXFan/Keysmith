@@ -7,10 +7,10 @@ namespace Keysmith.Models
     public class PinningModelBase : ModelBase, IPinningModel
     {
         #region Constant Values
-        protected const string defaultDriverPinHeader = "Driver Pins:";
-        protected const string defaultControlPinHeader = "Control Pins:";
-        protected const string defaultMasterPinHeader = "Master Pins:";
-        protected const string defaultBottomPinHeader = "Bottom Pins:";
+        protected const string defaultDriverPinHeader = "Driver Pins";
+        protected const string defaultControlPinHeader = "Control Pins";
+        protected const string defaultMasterPinHeader = "Master Pins";
+        protected const string defaultBottomPinHeader = "Bottom Pins";
         protected const string defaultEmptyCellSpacer = "-";
         #endregion
         #region Constructors

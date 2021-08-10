@@ -10,7 +10,7 @@
         <Style x:Key="cutsEntryStyle" TargetType="Entry">
             <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
             <Setter Property="Keyboard" Value="Numeric"/>
-            <Setter Property="MaxLength" Value="7"/>
+            <Setter Property="MaxLength" Value="10"/>
         </Style>
         <Style x:Key="codeEntryStyle" TargetType="Entry">
             <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>

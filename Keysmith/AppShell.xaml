@@ -16,6 +16,9 @@
         <Tab Title="SFIC" Route="sfic">
             <ShellContent ContentTemplate="{DataTemplate views:SFICPinningPage}"/>
         </Tab>
+        <Tab Title="Abloy" Route="abloy">
+            <ShellContent ContentTemplate="{DataTemplate views:AbloyPinningPage}"/>
+        </Tab>
     </FlyoutItem>
     <FlyoutItem Title="Edit" Route="edit">
         <Tab Title="Key" Route="key">

@@ -28,6 +28,9 @@
     <EmbeddedResource Update="Views\Controls\PinningViewControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\Pinning\AbloyPinningPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\Pinning\SFICPinningPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
