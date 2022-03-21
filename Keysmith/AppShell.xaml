@@ -1,9 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Shell  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        xmlns:local="clr-namespace:Keysmith"
+        xmlns:views="clr-namespace:Keysmith.Views"
         x:Class="Keysmith.AppShell">
-    <FlyoutItem Title="Main">
-        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="mainpage"/>
+    <FlyoutItem Title="Standard Pinning">
+        <ShellContent ContentTemplate="{DataTemplate views:StandardPinningView}" Route="standard"/>
+    </FlyoutItem>
+    <FlyoutItem Title="SFIC Pinning">
+        <ShellContent ContentTemplate="{DataTemplate views:SficPinningView}" Route="sfic"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Corbin LFIC Pinning">
+        <ShellContent ContentTemplate="{DataTemplate views:CorbinPinningView}" Route="corbin"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Abloy Pinning">
+        <ShellContent ContentTemplate="{DataTemplate views:AbloyPinningView}" Route="abloy"/>
     </FlyoutItem>
 </Shell>

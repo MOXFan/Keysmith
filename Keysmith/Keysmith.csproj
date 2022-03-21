@@ -56,7 +56,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\AbloyPinningView.xaml.cs">
+	    <DependentUpon>AbloyPinningView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\SficPinningView.xaml.cs">
+	    <DependentUpon>SficPinningView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\CorbinPinningView.xaml.cs">
+	    <DependentUpon>CorbinPinningView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 		<MauiXaml Update="AppShell.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\AbloyPinningView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\SficPinningView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\CorbinPinningView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
