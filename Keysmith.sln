@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Keysmith", "Keysmith\Keysmith.csproj", "{40ACB0AD-5B77-4850-AEF4-166BD78CB7F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Lib", "Keysmith.Lib\Keysmith.Lib.csproj", "{7463A143-76F6-4207-BCBC-CB1530BD1266}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{40ACB0AD-5B77-4850-AEF4-166BD78CB7F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40ACB0AD-5B77-4850-AEF4-166BD78CB7F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{40ACB0AD-5B77-4850-AEF4-166BD78CB7F5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{7463A143-76F6-4207-BCBC-CB1530BD1266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7463A143-76F6-4207-BCBC-CB1530BD1266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7463A143-76F6-4207-BCBC-CB1530BD1266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7463A143-76F6-4207-BCBC-CB1530BD1266}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
