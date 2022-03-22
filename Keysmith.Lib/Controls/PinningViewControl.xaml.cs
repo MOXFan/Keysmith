@@ -71,8 +71,7 @@ public partial class PinningViewControl : Frame
                 Text = Pinning.RowHeaders[rowIndex],
                 Style = headerStyle
             };
-
-            PinningGrid.Children.Add(currentLabel, 0, Pinning.RowHeaders.Count - rowIndex - 1);
+            PinningGrid.Add(currentLabel, 0, Pinning.RowHeaders.Count - rowIndex - 1);
         }
     }
     private void PopulatePins()
@@ -100,7 +99,7 @@ public partial class PinningViewControl : Frame
                 int gridRowIndex = Pinning.Rows.Count - 1 - rowIndex; // We want row 0 at the bottom of the grid.
                 int gridColumnIndex = columnIndex + 1; // Leave space for the label.
 
-                PinningGrid.Children.Add(currentFrame, gridColumnIndex, gridRowIndex);
+                PinningGrid.Add(currentFrame, gridColumnIndex, gridRowIndex);
             }
         }
     }
@@ -112,7 +111,7 @@ public partial class PinningViewControl : Frame
             nameof(Pinning),
             typeof(IPinningModel),
             typeof(PinningViewControl),
-            new PinningModelBase(),
+            new BasePinningModel(),
             propertyChanged: OnPinningChanged
         );
     }
