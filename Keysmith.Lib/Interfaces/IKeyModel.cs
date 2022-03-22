@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Keysmith.Lib.Interfaces;
 
-namespace Keysmith.Lib.Interfaces
+public interface IKeyModel
 {
-    public interface IKeyModel
-    {
-    }
+    String Cuts { get; set; }
+    int[] CutsList { get; set; }
 }

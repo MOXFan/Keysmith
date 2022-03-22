@@ -56,6 +56,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Keysmith.Lib\Keysmith.Lib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Views\AbloyPinningView.xaml.cs">
 	    <DependentUpon>AbloyPinningView.xaml</DependentUpon>
 	  </Compile>
