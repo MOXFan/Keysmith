@@ -77,8 +77,8 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<int?> PadKey(IKeyModel inputKey, int paddingLength, bool isEndStoppedLeft = true)
     {
-        List<int?> output = new List<int?>();
-        int currentKeyLength = inputKey.CutsList.Length;
+        List<int?> output = new();
+        int currentKeyLength = inputKey.CutsList.Count;
         int paddingDelta = paddingLength - currentKeyLength;
 
         if (paddingDelta >= 0) // Pad
@@ -113,7 +113,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<List<int?>> GetPaddedKeys(IEnumerable<IKeyModel> inputOperatingKeys, int paddingLength, bool isEndStoppedLeft = true)
     {
-        List<List<int?>> output = new List<List<int?>>();
+        List<List<int?>> output = new();
 
         foreach (IKeyModel currentKey in inputOperatingKeys)
         { output.Add(PadKey(currentKey, paddingLength, isEndStoppedLeft)); }

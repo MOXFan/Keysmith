@@ -3,5 +3,5 @@
 public interface IKeyModel
 {
     String Cuts { get; set; }
-    int[] CutsList { get; set; }
+    List<int> CutsList { get; }
 }
