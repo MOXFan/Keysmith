@@ -2,7 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Keysmith.Views.StandardPinningView"
+             xmlns:vm="clr-namespace:Keysmith.Lib.ViewModels;assembly=Keysmith.Lib"
+             xmlns:ctrl="clr-namespace:Keysmith.Lib.Controls;assembly=Keysmith.Lib"
              Title="Standard Cylinders">
+    <ContentPage.BindingContext>
+        <vm:StandardPinningViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Standard Pinning Page"

@@ -1,6 +1,6 @@
 ﻿namespace Keysmith.Lib.ViewModels;
 
-class StandardPinningViewModel : PropertyChangedBase
+public class StandardPinningViewModel : PropertyChangedBase
 {
     #region Private Members
     private StandardPinningModel _pinning = new();
