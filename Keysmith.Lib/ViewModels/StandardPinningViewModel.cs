@@ -3,20 +3,17 @@
 class StandardPinningViewModel : PropertyChangedBase
 {
     #region Private Members
-    private StandardPinningModel _pinning = new StandardPinningModel();
-    private ObservableCollection<KeyModel> _selectedKeys = new ObservableCollection<KeyModel>();
-    private bool _isRefreshingCurrentKeys = false;
+    private StandardPinningModel _pinning = new();
+    private ObservableCollection<KeyModel> _keys = new();
     #endregion
     #region Constructors
     public StandardPinningViewModel()
     {
-        AddKeyCommand = new Command(OpenAddKeySelector);
+        AddKeyCommand = new Command(AddKey);
         ClearKeysCommand = new Command(ClearKeys);
-        RefreshSelectedKeysCommand = new Command(RefreshSelectedKeysAsync);
     }
     #endregion
     #region Properties
-    protected string SelectAddKeyRoute { get { return "//select/key"; } }
     public StandardPinningModel Pinning
     {
         get { return _pinning; }
@@ -26,59 +23,29 @@ class StandardPinningViewModel : PropertyChangedBase
             OnPropertyChanged();
         }
     }
-    public ObservableCollection<KeyModel> SelectedKeys
+    public ObservableCollection<KeyModel> Keys
     {
-        get { return _selectedKeys; }
+        get { return _keys; }
         set
         {
-            _selectedKeys = value;
+            _keys = value;
             OnPropertyChanged();
         }
     }
     public ICommand AddKeyCommand { get; private set; }
     public ICommand ClearKeysCommand { get; private set; }
-    public ICommand RefreshSelectedKeysCommand { get; private set; }
-    public bool IsRefreshingSelectedKeys
-    {
-        get { return _isRefreshingCurrentKeys; }
-        set
-        {
-            _isRefreshingCurrentKeys = value;
-            OnPropertyChanged();
-        }
-    }
     #endregion
     #region Methods
-    protected void AddSelectedKey(KeyModel selection)
+    protected void AddKey()
     {
-        if (SelectedKeys.Contains(selection) == false)
-        {
-            SelectedKeys.Add(selection);
-            OnPropertyChanged("SelectedKeys");
-            UpdatePinning();
-        }
+        throw new NotImplementedException();
     }
     protected void UpdatePinning()
-    { Pinning = new StandardPinningModel(SelectedKeys); }
-    public void OpenAddKeySelector()
-    { OpenSelectPageAsync<KeyModel>(SelectAddKeyRoute, AddKeySelectorViewModel_ItemSelected); }
+    { Pinning = new StandardPinningModel(Keys); }
     public void ClearKeys()
     {
-        SelectedKeys = new ObservableCollection<KeyModel>();
+        Keys = new ObservableCollection<KeyModel>();
         UpdatePinning();
     }
-    public async void RefreshSelectedKeysAsync()
-    {
-        ObservableCollection<KeyModel> buffer = new ObservableCollection<KeyModel>();
-        for (int index = 0; index < SelectedKeys.Count; index++)
-        {
-            buffer.Add(await Repo.GetItemAsync(SelectedKeys[index].ID));
-        }
-        SelectedKeys = buffer;
-        IsRefreshingSelectedKeys = false;
-        UpdatePinning();
-    }
-    protected void AddKeySelectorViewModel_ItemSelected(object sender, KeyModel selection)
-    { AddSelectedKey(selection); }
     #endregion
 }
