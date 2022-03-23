@@ -4,13 +4,19 @@ public class StandardPinningViewModel : PropertyChangedBase
 {
     #region Private Members
     private StandardPinningModel _pinning = new();
-    private ObservableCollection<KeyModel> _keys = new();
+    private ObservableCollection<KeyModel> _keys = new()
+    {
+        new(){ Cuts="134567" },
+        new(){ Cuts="235764" },
+        new(){ Cuts="567423" }
+    };
     #endregion
     #region Constructors
     public StandardPinningViewModel()
     {
         AddKeyCommand = new Command(AddKey);
         ClearKeysCommand = new Command(ClearKeys);
+        UpdatePinning();
     }
     #endregion
     #region Properties

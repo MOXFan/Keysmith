@@ -27,8 +27,8 @@ public class StandardPinningModel : PropertyChangedBase, IPinningModel
     #endregion
     #region Properties
     public ObservableCollection<IKeyModel> Keys { get; protected set; } = new();
-    public ObservableCollection<String> RowHeaders { get; protected set; } = new ObservableCollection<string>();
-    public ObservableCollection<ObservableCollection<string>> Rows { get; protected set; } = new ObservableCollection<ObservableCollection<string>>();
+    public ObservableCollection<string> RowHeaders { get; protected set; } = new();
+    public ObservableCollection<ObservableCollection<string>> Rows { get; protected set; } = new();
     public int ColumnCount { get; protected set; }
 
     public string DriverPinHeader { get; protected set; } = defaultDriverPinHeader;
@@ -51,7 +51,28 @@ public class StandardPinningModel : PropertyChangedBase, IPinningModel
         DriverPinHeader = inputDriverPinHeader;
         EmptyCellSpacer = inputEmptyCellSpacer;
     }
-    protected virtual void Initialize() { }
+    protected virtual void Initialize()
+    {
+        if (Keys is null)
+        { return; }
+
+        int minKeyLength = GetMinKeyLength(Keys);
+
+        List<List<int?>> paddedKeys = GetPaddedKeys(Keys, minKeyLength, IsEndStoppedLeft);
+
+        if (minKeyLength < 1)
+        { paddedKeys = GenerateEmptyPaddedKeys(6); }
+
+        List<List<int?>> cuts = GetSortedCuts(paddedKeys);
+
+        List<List<int?>> pins = GetOperatingPins(cuts);
+
+        int rowCount = CountRowsFromColumns(pins);
+
+        RowHeaders = GenerateStandardRowHeaders(rowCount, BottomPinHeader, MasterPinHeader);
+        Rows = GenerateStandardRows(pins, EmptyCellSpacer);
+        ColumnCount = GetMaxRowLength(Rows);
+    }
     #endregion
     #region Static Methods
     public static int GetMaxKeyLength(IEnumerable<IKeyModel> inputKeys)
