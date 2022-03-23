@@ -19,7 +19,8 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
         String inputMasterPinHeader = defaultMasterPinHeader, String inputControlPinHeader = defaultControlPinHeader,
         String inputDriverPinHeader = defaultDriverPinHeader, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
     {
-        SetValues(inputKeys, inputIsEndStoppedLeft, inputBottomPinHeader, inputMasterPinHeader, inputControlPinHeader, inputDriverPinHeader, inputEmptyCellSpacer);
+        SetValues(inputKeys, inputIsEndStoppedLeft, inputBottomPinHeader, inputMasterPinHeader, 
+            inputControlPinHeader, inputDriverPinHeader, inputEmptyCellSpacer);
 
         Initialize();
     }
@@ -122,8 +123,8 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<List<int?>> GenerateEmptyPaddedKeys(int paddingLength)
     {
-        List<List<int?>> output = new List<List<int?>>();
-        List<int?> currentRow = new List<int?>();
+        List<List<int?>> output = new();
+        List<int?> currentRow = new();
 
         for (int columnIndex = 0; columnIndex < paddingLength; columnIndex++)
         { currentRow.Add(null); }
@@ -134,7 +135,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<int?> GetSortedCutsAtIndex(List<List<int?>> inputKeys, int index)
     {
-        List<int?> output = new List<int?>();
+        List<int?> output = new();
 
         foreach (List<int?> currentKey in inputKeys)
         {
@@ -164,7 +165,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<List<int?>> GetSortedCuts(List<List<int?>> inputKeys)
     {
-        List<List<int?>> output = new List<List<int?>>();
+        List<List<int?>> output = new();
         if (inputKeys.Count == 0)
         { return output; }
 
@@ -173,7 +174,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
         foreach (List<int?> currentKey in inputKeys)
         {
             if (currentKey.Count != keyLength)
-            { throw new ArgumentException(); }
+            { throw new ArgumentException("Unequal key length.",nameof(inputKeys)); }
         }
 
         for (int columnIndex = 0; columnIndex < keyLength; columnIndex++)
@@ -185,17 +186,19 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     { // Returns false only on empty input, throws exception for invalid input. (Empty input is normal use case, invalid input means bad code.)
         if (inputCutColumn.Count <= 0)
         { return false; }
-        else if (inputCutColumn[0] == null)
-        { throw new ArgumentNullException("inputCutColumn cannot contain null values."); }
+
+        ArgumentNullException.ThrowIfNull(inputCutColumn[0], $"{nameof(inputCutColumn)} cannot be null.");
 
         for (int index = 1; index < inputCutColumn.Count; index++)
         {
             int? previousCut = inputCutColumn[index - 1];
             int? currentCut = inputCutColumn[index];
 
-            if (currentCut == null || previousCut == null)
-            { throw new ArgumentNullException("inputCutColumn cannot contain null values."); }
-            else if (currentCut <= previousCut)
+
+            ArgumentNullException.ThrowIfNull(currentCut, $"{nameof(inputCutColumn)} cannot contain null values.");
+            ArgumentNullException.ThrowIfNull(previousCut, $"{nameof(inputCutColumn)} cannot contain null values.");
+            
+            if (currentCut <= previousCut)
             { throw new ArgumentException("inputCutColumn must be sorted."); }
         }
 
@@ -221,11 +224,11 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
         if (ValidateCuts(inputCutColumn) == false)
         { return null; }
 
-        return inputCutColumn[inputCutColumn.Count - 1];
+        return inputCutColumn[^1];
     }
     public static List<int?> GetDeepestCuts(List<List<int?>> inputCutColumns)
     {
-        List<int?> output = new List<int?>();
+        List<int?> output = new();
 
         foreach (List<int?> currentColumn in inputCutColumns)
         { output.Add(GetDeepestCut(currentColumn)); }
@@ -234,7 +237,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<int?> CalculatePinColumn(List<int?> inputCutColumn)
     {
-        List<int?> output = new List<int?>();
+        List<int?> output = new();
         int? previousCut = null;
 
         if (ValidateCuts(inputCutColumn) == false)
@@ -259,12 +262,12 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     public static List<int?> PadColumn(List<int?> inputColumn, int paddingHeight)
     {
         if (inputColumn.Count > paddingHeight)
-        { throw new ArgumentOutOfRangeException(); }
+        { throw new ArgumentOutOfRangeException(nameof(inputColumn)); }
         else if (inputColumn.Count == paddingHeight)
         { return inputColumn; }
         else
         {
-            List<int?> output = new List<int?>();
+            List<int?> output = new();
             for (int rowIndex = 0; rowIndex < paddingHeight; rowIndex++)
             {
                 if (rowIndex >= inputColumn.Count)
@@ -277,7 +280,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<List<int?>> PadColumns(List<List<int?>> inputColumns)
     {
-        List<List<int?>> output = new List<List<int?>>();
+        List<List<int?>> output = new();
         int maxColumnHeight = GetMaxColumnHeight(inputColumns);
 
         foreach (List<int?> currentColumn in inputColumns)
@@ -287,7 +290,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static List<List<int?>> GetOperatingPins(List<List<int?>> inputOperatingCuts)
     {
-        List<List<int?>> output = new List<List<int?>>();
+        List<List<int?>> output = new();
 
         foreach (List<int?> currentCutColumn in inputOperatingCuts)
         { output.Add(CalculatePinColumn(currentCutColumn)); }
@@ -296,7 +299,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     }
     public static ObservableCollection<String> GetRowAtIndex(List<List<int?>> inputColumns, int index, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
     {
-        ObservableCollection<String> output = new ObservableCollection<string>();
+        ObservableCollection<String> output = new();
 
         int maxColumnHeight = GetMaxColumnHeight(inputColumns);
 
@@ -334,7 +337,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     public static ObservableCollection<String> GenerateStandardRowHeaders(int operatingRows, string inputBottomPinHeader = defaultBottomPinHeader,
         string inputMasterPinHeader = defaultMasterPinHeader)
     {
-        ObservableCollection<String> output = new ObservableCollection<string>();
+        ObservableCollection<String> output = new();
         if (operatingRows < 1)
         { return output; }
 
@@ -348,7 +351,7 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     public static ObservableCollection<ObservableCollection<String>> GenerateStandardRows(List<List<int?>> inputOperatingPins,
         String inputEmptyCellSpacer = defaultEmptyCellSpacer)
     {
-        ObservableCollection<ObservableCollection<String>> output = new ObservableCollection<ObservableCollection<string>>();
+        ObservableCollection<ObservableCollection<String>> output = new();
         int rowCount = CountRowsFromColumns(inputOperatingPins);
 
         if (inputOperatingPins.Count < 1)
