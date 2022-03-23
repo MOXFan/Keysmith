@@ -111,7 +111,7 @@ public partial class PinningViewControl : Frame
             nameof(Pinning),
             typeof(IPinningModel),
             typeof(PinningViewControl),
-            new BasePinningModel(),
+            new StandardPinningModel(),
             propertyChanged: OnPinningChanged
         );
     }

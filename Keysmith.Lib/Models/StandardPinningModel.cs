@@ -1,6 +1,6 @@
 ﻿namespace Keysmith.Lib.Models;
 
-public class BasePinningModel : PropertyChangedBase, IPinningModel
+public class StandardPinningModel : PropertyChangedBase, IPinningModel
 {
     #region Constant Values
     protected const string defaultDriverPinHeader = "Driver Pins";
@@ -10,12 +10,12 @@ public class BasePinningModel : PropertyChangedBase, IPinningModel
     protected const string defaultEmptyCellSpacer = "-";
     #endregion
     #region Constructors
-    public BasePinningModel()
+    public StandardPinningModel()
     {
         SetValues(new ObservableCollection<IKeyModel>());
         Initialize();
     }
-    public BasePinningModel(IEnumerable<IKeyModel> inputKeys, bool inputIsEndStoppedLeft = true, String inputBottomPinHeader = defaultBottomPinHeader,
+    public StandardPinningModel(IEnumerable<IKeyModel> inputKeys, bool inputIsEndStoppedLeft = true, String inputBottomPinHeader = defaultBottomPinHeader,
         String inputMasterPinHeader = defaultMasterPinHeader, String inputControlPinHeader = defaultControlPinHeader,
         String inputDriverPinHeader = defaultDriverPinHeader, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
     {

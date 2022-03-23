@@ -3,7 +3,7 @@
 #pragma warning disable 8600 // We're specifically testing results of unexpected null arguments.
 
 [TestClass()]
-public class BasePinningModelTests
+public class StandardPinningModelTests
 {
     #region GetMaxKeyLength
     [TestMethod]
@@ -11,7 +11,7 @@ public class BasePinningModelTests
     {
         List<KeyModel> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetMaxKeyLength(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetMaxKeyLength(input); });
     }
     [TestMethod]
     public void GetMaxKeyLength_EmptyListReturnsZero()
@@ -19,7 +19,7 @@ public class BasePinningModelTests
         List<KeyModel> input = new();
         int expected = 0;
 
-        int output = BasePinningModel.GetMaxKeyLength(input);
+        int output = StandardPinningModel.GetMaxKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -29,7 +29,7 @@ public class BasePinningModelTests
         List<KeyModel> input = new() { new(), new(), new() };
         int expected = 0;
 
-        int output = BasePinningModel.GetMaxKeyLength(input);
+        int output = StandardPinningModel.GetMaxKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -45,7 +45,7 @@ public class BasePinningModelTests
             };
         int expected = 6;
 
-        int output = BasePinningModel.GetMaxKeyLength(input);
+        int output = StandardPinningModel.GetMaxKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -56,7 +56,7 @@ public class BasePinningModelTests
     {
         List<KeyModel> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetMinKeyLength(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetMinKeyLength(input); });
     }
     [TestMethod]
     public void GetMinKeyLength_EmptyListReturnsZero()
@@ -64,7 +64,7 @@ public class BasePinningModelTests
         List<KeyModel> input = new();
         int expected = 0;
 
-        int output = BasePinningModel.GetMinKeyLength(input);
+        int output = StandardPinningModel.GetMinKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -74,7 +74,7 @@ public class BasePinningModelTests
         List<KeyModel> input = new() { new(), new(), new() };
         int expected = 0;
 
-        int output = BasePinningModel.GetMinKeyLength(input);
+        int output = StandardPinningModel.GetMinKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -90,7 +90,7 @@ public class BasePinningModelTests
             };
         int expected = 3;
 
-        int output = BasePinningModel.GetMinKeyLength(input);
+        int output = StandardPinningModel.GetMinKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -106,7 +106,7 @@ public class BasePinningModelTests
             };
         int expected = 3;
 
-        int output = BasePinningModel.GetMinKeyLength(input);
+        int output = StandardPinningModel.GetMinKeyLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -117,7 +117,7 @@ public class BasePinningModelTests
     {
         KeyModel input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.PadKey(input, 0); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.PadKey(input, 0); });
     }
     [TestMethod]
     public void PadKey_ZeroPaddingLengthReturnsEmptyList()
@@ -125,7 +125,7 @@ public class BasePinningModelTests
         KeyModel input = new() { Cuts = "123456" };
         List<int?> expected = new();
 
-        List<int?> output = BasePinningModel.PadKey(input, 0);
+        List<int?> output = StandardPinningModel.PadKey(input, 0);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -135,7 +135,7 @@ public class BasePinningModelTests
         KeyModel input = new(){ Cuts = "123456" };
         List<int?> expected = new(){ 1, 2, 3, 4, 5, 6 };
 
-        List<int?> output = BasePinningModel.PadKey(input, 6);
+        List<int?> output = StandardPinningModel.PadKey(input, 6);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -148,7 +148,7 @@ public class BasePinningModelTests
         KeyModel input = new(){ Cuts = "123456" };
         List<int?> expected = new(){ 1, 2, 3 };
 
-        List<int?> output = BasePinningModel.PadKey(input, 3, true);
+        List<int?> output = StandardPinningModel.PadKey(input, 3, true);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -162,7 +162,7 @@ public class BasePinningModelTests
 
         List<int?> expected = new(){ 4, 5, 6 };
 
-        List<int?> output = BasePinningModel.PadKey(input, 3, false);
+        List<int?> output = StandardPinningModel.PadKey(input, 3, false);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -176,7 +176,7 @@ public class BasePinningModelTests
 
         List<int?> expected = new(){ 1, 2, 3, 4, 5, 6, null, null, null };
 
-        List<int?> output = BasePinningModel.PadKey(input, 9, true);
+        List<int?> output = StandardPinningModel.PadKey(input, 9, true);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -190,7 +190,7 @@ public class BasePinningModelTests
 
         List<int?> expected = new(){ null, null, null, 1, 2, 3, 4, 5, 6 };
 
-        List<int?> output = BasePinningModel.PadKey(input, 9, false);
+        List<int?> output = StandardPinningModel.PadKey(input, 9, false);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -204,7 +204,7 @@ public class BasePinningModelTests
     {
         List<KeyModel> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetPaddedKeys(input, 0); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetPaddedKeys(input, 0); });
     }
     [TestMethod]
     public void GetPaddedKeys_EmptyInputListReturnsEmptyOutputList()
@@ -212,7 +212,7 @@ public class BasePinningModelTests
         List<KeyModel> input = new();
         List<List<int?>> expected = new();
 
-        List<List<int?>> output = BasePinningModel.GetPaddedKeys(input, 5);
+        List<List<int?>> output = StandardPinningModel.GetPaddedKeys(input, 5);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -227,7 +227,7 @@ public class BasePinningModelTests
             };
         int inputLength = 6;
 
-        List<List<int?>> output = BasePinningModel.GetPaddedKeys(input, inputLength);
+        List<List<int?>> output = StandardPinningModel.GetPaddedKeys(input, inputLength);
 
         foreach (List<int?> currentKey in output)
         { Assert.AreEqual(inputLength, currentKey.Count); }
@@ -240,7 +240,7 @@ public class BasePinningModelTests
         int input = 0;
         List<List<int?>> expected = new() { new List<int?>() };
 
-        List<List<int?>> output = BasePinningModel.GenerateEmptyPaddedKeys(input);
+        List<List<int?>> output = StandardPinningModel.GenerateEmptyPaddedKeys(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -256,7 +256,7 @@ public class BasePinningModelTests
                 new List<int?>{ null, null, null, null, null, null }
             };
 
-        List<List<int?>> output = BasePinningModel.GenerateEmptyPaddedKeys(input);
+        List<List<int?>> output = StandardPinningModel.GenerateEmptyPaddedKeys(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -279,7 +279,7 @@ public class BasePinningModelTests
         List<List<int?>> input = null;
         int inputIndex = 0;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetSortedCutsAtIndex(input, inputIndex); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetSortedCutsAtIndex(input, inputIndex); });
     }
     [TestMethod]
     public void GetSortedCutsAtIndex_ValidIndexReturnsProperlySortedCutsWithNullsAndDuplicatesOmitted()
@@ -298,7 +298,7 @@ public class BasePinningModelTests
         int inputIndex = 2;
         List<int?> expected = new(){ 1, 3, 4, 5, 7 };
 
-        List<int?> output = BasePinningModel.GetSortedCutsAtIndex(input, inputIndex);
+        List<int?> output = StandardPinningModel.GetSortedCutsAtIndex(input, inputIndex);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -317,8 +317,8 @@ public class BasePinningModelTests
                 new(){ null, null, 7, null },
             };
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => { BasePinningModel.GetSortedCutsAtIndex(input, -1); });
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => { BasePinningModel.GetSortedCutsAtIndex(input, 7); });
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => { StandardPinningModel.GetSortedCutsAtIndex(input, -1); });
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => { StandardPinningModel.GetSortedCutsAtIndex(input, 7); });
     }
     #endregion
     #region GetMaxColumnHeight
@@ -327,7 +327,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetMaxColumnHeight(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetMaxColumnHeight(input); });
     }
     [TestMethod]
     public void GetMaxColumnHeight_ValidDataReturnsTallestColumnHeight()
@@ -341,7 +341,7 @@ public class BasePinningModelTests
             };
         int expected = 5;
 
-        int output = BasePinningModel.GetMaxColumnHeight(input);
+        int output = StandardPinningModel.GetMaxColumnHeight(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -351,7 +351,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         int expected = 0;
 
-        int output = BasePinningModel.GetMaxColumnHeight(input);
+        int output = StandardPinningModel.GetMaxColumnHeight(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -366,7 +366,7 @@ public class BasePinningModelTests
         };
         int expected = 0;
 
-        int output = BasePinningModel.GetMaxColumnHeight(input);
+        int output = StandardPinningModel.GetMaxColumnHeight(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -377,7 +377,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetSortedCuts(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetSortedCuts(input); });
     }
     [TestMethod]
     public void GetSortedCuts_EmptyInputReturnsEmptyOutput()
@@ -385,7 +385,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         List<List<int?>> expected = new();
 
-        List<List<int?>> output = BasePinningModel.GetSortedCuts(input);
+        List<List<int?>> output = StandardPinningModel.GetSortedCuts(input);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -398,7 +398,7 @@ public class BasePinningModelTests
             new(){ 4, 3, 5, 1, 2 }
         };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.GetSortedCuts(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.GetSortedCuts(input); });
     }
     [TestMethod]
     public void GetSortedCuts_ValidInputReturnsCorrectOutput()
@@ -420,7 +420,7 @@ public class BasePinningModelTests
                 new(){ 2, 6, 7 }
             };
 
-        List<List<int?>> output = BasePinningModel.GetSortedCuts(input);
+        List<List<int?>> output = StandardPinningModel.GetSortedCuts(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -442,14 +442,14 @@ public class BasePinningModelTests
     {
         List<int?> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_EmptyInputReturnsFalse()
     {
         List<int?> input = new();
 
-        bool output = BasePinningModel.ValidateCuts(input);
+        bool output = StandardPinningModel.ValidateCuts(input);
 
         Assert.IsFalse(output);
     }
@@ -458,39 +458,39 @@ public class BasePinningModelTests
     {
         List<int?> input = new(){ null };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_InputContainsNullThrowsException()
     {
         List<int?> input = new(){ 1, 2, 3, null, 5, 6 };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.ValidateCuts(input); });
 
         input = new(){ null, 2, 3, 4, 5, 6 };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_InputContainsDuplicatesThrowsException()
     {
         List<int?> input = new(){ 1, 2, 3, 3, 5, 6 };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_UnsortedInputThrowsException()
     {
         List<int?> input = new(){ 2, 3, 1, 4, 6, 5 };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_ValidInputReturnsTrue()
     {
         List<int?> input = new(){ 1, 2, 3 };
 
-        bool output = BasePinningModel.ValidateCuts(input);
+        bool output = StandardPinningModel.ValidateCuts(input);
 
         Assert.IsTrue(output);
     }
@@ -501,14 +501,14 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_ListOverload_EmptyInputReturnsFalse()
     {
         List<List<int?>> input = new();
 
-        Assert.IsFalse(BasePinningModel.ValidateCuts(input));
+        Assert.IsFalse(StandardPinningModel.ValidateCuts(input));
     }
     [TestMethod]
     public void ValidateCuts_ListOverload_InputContainsNullThrowsException()
@@ -520,7 +520,7 @@ public class BasePinningModelTests
                 new(){ 7, 8, 9 }
         };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.ValidateCuts(input); });
 
         input = new List<List<int?>>
         {
@@ -529,7 +529,7 @@ public class BasePinningModelTests
                 new List<int?> { 7, 8, 9 }
         };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_ListOverload_InputContainsDuplicatesThrowsException()
@@ -541,7 +541,7 @@ public class BasePinningModelTests
                 new(){ 7, 8, 9 }
         };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_ListOverload_UnsortedInputThrowsException()
@@ -554,7 +554,7 @@ public class BasePinningModelTests
                 new(){ 2, 3, 1, 4, 6, 5 }
         };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.ValidateCuts(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.ValidateCuts(input); });
     }
     [TestMethod]
     public void ValidateCuts_ListOverload_ValidInputReturnsTrue()
@@ -567,7 +567,7 @@ public class BasePinningModelTests
                 new()
         };
 
-        Assert.IsTrue(BasePinningModel.ValidateCuts(input));
+        Assert.IsTrue(StandardPinningModel.ValidateCuts(input));
     }
     #endregion
     #region GetDeepestCut
@@ -576,14 +576,14 @@ public class BasePinningModelTests
     {
         List<int?> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetDeepestCut(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetDeepestCut(input); });
     }
     [TestMethod]
     public void GetDeepestCut_EmptyInputReturnsNull()
     {
         List<int?> input = new();
 
-        int? output = BasePinningModel.GetDeepestCut(input);
+        int? output = StandardPinningModel.GetDeepestCut(input);
 
         Assert.IsNull(output);
     }
@@ -592,14 +592,14 @@ public class BasePinningModelTests
     {
         List<int?> input = new(){ 1, 2, 3, null, 5, 6 };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.GetDeepestCut(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.GetDeepestCut(input); });
     }
     [TestMethod]
     public void GetDeepestCut_UnsortedInputThrowsException()
     {
         List<int?> input = new(){ 2, 3, 1, 4, 6, 5 };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.GetDeepestCut(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.GetDeepestCut(input); });
     }
     [TestMethod]
     public void GetDeepestCut_ValidInputReturnsDeepestCut()
@@ -607,7 +607,7 @@ public class BasePinningModelTests
         List<int?> input = new(){ 1, 2, 3, 4, 5, 6 };
         int expected = 6;
 
-        int? output = BasePinningModel.GetDeepestCut(input);
+        int? output = StandardPinningModel.GetDeepestCut(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -618,7 +618,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetDeepestCuts(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetDeepestCuts(input); });
     }
     [TestMethod]
     public void GetDeepestCuts_EmptyInputReturnsEmptyOutput()
@@ -626,7 +626,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         List<int?> expected = new();
 
-        List<int?> output = BasePinningModel.GetDeepestCuts(input);
+        List<int?> output = StandardPinningModel.GetDeepestCuts(input);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -641,7 +641,7 @@ public class BasePinningModelTests
         };
         List<int?> expected = new() { null, null, null };
 
-        List<int?> output = BasePinningModel.GetDeepestCuts(input);
+        List<int?> output = StandardPinningModel.GetDeepestCuts(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -660,7 +660,7 @@ public class BasePinningModelTests
         };
         List<int?> expected = new() { 4, 5, 6, 7 };
 
-        List<int?> output = BasePinningModel.GetDeepestCuts(input);
+        List<int?> output = StandardPinningModel.GetDeepestCuts(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -674,7 +674,7 @@ public class BasePinningModelTests
     {
         List<int?> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.CalculatePinColumn(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.CalculatePinColumn(input); });
     }
     [TestMethod]
     public void CalculatePinColumn_EmptyInputReturnsEmptyOutput()
@@ -682,7 +682,7 @@ public class BasePinningModelTests
         List<int?> input = new();
         List<int?> expected = new();
 
-        List<int?> output = BasePinningModel.CalculatePinColumn(input);
+        List<int?> output = StandardPinningModel.CalculatePinColumn(input);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -691,14 +691,14 @@ public class BasePinningModelTests
     {
         List<int?> input = new(){ 1, 2, null, 3 };
 
-        Assert.ThrowsException<ArgumentNullException>(() => { BasePinningModel.CalculatePinColumn(input); });
+        Assert.ThrowsException<ArgumentNullException>(() => { StandardPinningModel.CalculatePinColumn(input); });
     }
     [TestMethod]
     public void CalculatePinColumn_UnsortedInputThrowsException()
     {
         List<int?> input = new(){ 3, 1, 2, 4 };
 
-        Assert.ThrowsException<ArgumentException>(() => { BasePinningModel.CalculatePinColumn(input); });
+        Assert.ThrowsException<ArgumentException>(() => { StandardPinningModel.CalculatePinColumn(input); });
     }
     [TestMethod]
     public void CalculatePinColumn_ValidInputReturnsCorrectOutput()
@@ -706,7 +706,7 @@ public class BasePinningModelTests
         List<int?> input = new(){ 1, 3, 4, 9 };
         List<int?> expected = new(){ 1, 2, 1, 5 };
 
-        List<int?> output = BasePinningModel.CalculatePinColumn(input);
+        List<int?> output = StandardPinningModel.CalculatePinColumn(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -721,7 +721,7 @@ public class BasePinningModelTests
         List<int?> input = null;
         int inputPaddingHeight = 5;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.PadColumn(input, inputPaddingHeight); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.PadColumn(input, inputPaddingHeight); });
     }
     [TestMethod]
     public void PadColumn_EmptyInputReturnsColumnOfNulls()
@@ -730,7 +730,7 @@ public class BasePinningModelTests
         int inputPaddingHeight = 5;
         List<int?> expected = new(){ null, null, null, null, null };
 
-        List<int?> output = BasePinningModel.PadColumn(input, inputPaddingHeight);
+        List<int?> output = StandardPinningModel.PadColumn(input, inputPaddingHeight);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -744,7 +744,7 @@ public class BasePinningModelTests
         int inputPaddingHeight = 5;
         List<int?> expected = input;
 
-        List<int?> output = BasePinningModel.PadColumn(input, inputPaddingHeight);
+        List<int?> output = StandardPinningModel.PadColumn(input, inputPaddingHeight);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -758,7 +758,7 @@ public class BasePinningModelTests
         int inputPaddingHeight = 7;
         List<int?> expected = new(){ 1, 2, 3, 4, 5, null, null };
 
-        List<int?> output = BasePinningModel.PadColumn(input, inputPaddingHeight);
+        List<int?> output = StandardPinningModel.PadColumn(input, inputPaddingHeight);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -771,7 +771,7 @@ public class BasePinningModelTests
         List<int?> input = new(){ 1, 2, 3, 4, 5 };
         int inputPaddingHeight = 2;
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => { BasePinningModel.PadColumn(input, inputPaddingHeight); });
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => { StandardPinningModel.PadColumn(input, inputPaddingHeight); });
     }
     #endregion
     #region PadColumns
@@ -780,7 +780,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.PadColumns(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.PadColumns(input); });
     }
     [TestMethod]
     public void PadColumns_EmptyInputReturnsEmptyOutput()
@@ -788,7 +788,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         List<List<int?>> expected = new();
 
-        List<List<int?>> output = BasePinningModel.PadColumns(input);
+        List<List<int?>> output = StandardPinningModel.PadColumns(input);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -808,7 +808,7 @@ public class BasePinningModelTests
                 new(){ 1, 2, null, null, null }
         };
 
-        List<List<int?>> output = BasePinningModel.PadColumns(input);
+        List<List<int?>> output = StandardPinningModel.PadColumns(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -830,7 +830,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetOperatingPins(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetOperatingPins(input); });
     }
     [TestMethod]
     public void GetOperatingPins_EmptyInputReturnsEmptyOutput()
@@ -838,7 +838,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         List<List<int?>> expected = new();
 
-        List<List<int?>> output = BasePinningModel.GetOperatingPins(input);
+        List<List<int?>> output = StandardPinningModel.GetOperatingPins(input);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -862,7 +862,7 @@ public class BasePinningModelTests
                 new(){ 2, 2, 4, 1, null, null }
         };
 
-        List<List<int?>> output = BasePinningModel.GetOperatingPins(input);
+        List<List<int?>> output = StandardPinningModel.GetOperatingPins(input);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -886,7 +886,7 @@ public class BasePinningModelTests
         List<List<int?>> input = null;
         int inputIndex = 0;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetRowAtIndex(input, inputIndex); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetRowAtIndex(input, inputIndex); });
     }
     [TestMethod]
     public void GetRowAtIndex_IndexOutOfRangeThrowsException()
@@ -900,8 +900,8 @@ public class BasePinningModelTests
         int inputIndexLow = -1;
         int inputIndexHigh = 5;
 
-        Assert.ThrowsException<IndexOutOfRangeException>(() => { BasePinningModel.GetRowAtIndex(input, inputIndexLow); });
-        Assert.ThrowsException<IndexOutOfRangeException>(() => { BasePinningModel.GetRowAtIndex(input, inputIndexHigh); });
+        Assert.ThrowsException<IndexOutOfRangeException>(() => { StandardPinningModel.GetRowAtIndex(input, inputIndexLow); });
+        Assert.ThrowsException<IndexOutOfRangeException>(() => { StandardPinningModel.GetRowAtIndex(input, inputIndexHigh); });
     }
     [TestMethod]
     public void GetRowAtIndex_EmptyInputThrowsException()
@@ -909,7 +909,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         int inputIndex = 0;
 
-        Assert.ThrowsException<IndexOutOfRangeException>(() => { BasePinningModel.GetRowAtIndex(input, inputIndex); });
+        Assert.ThrowsException<IndexOutOfRangeException>(() => { StandardPinningModel.GetRowAtIndex(input, inputIndex); });
     }
     [TestMethod]
     public void GetRowAtIndex_ValidInputWithCompleteRowReturnsCorrectResult()
@@ -923,7 +923,7 @@ public class BasePinningModelTests
         int inputIndex = 0;
         ObservableCollection<string> expected = new() { "1", "4", "7" };
 
-        ObservableCollection<string> output = BasePinningModel.GetRowAtIndex(input, inputIndex);
+        ObservableCollection<string> output = StandardPinningModel.GetRowAtIndex(input, inputIndex);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -945,7 +945,7 @@ public class BasePinningModelTests
 
         ObservableCollection<string> expected = new() { "X", "X", "10" };
 
-        ObservableCollection<string> output = BasePinningModel.GetRowAtIndex(input, inputIndex, inputSpacer);
+        ObservableCollection<string> output = StandardPinningModel.GetRowAtIndex(input, inputIndex, inputSpacer);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -959,7 +959,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.CountRowsFromColumns(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.CountRowsFromColumns(input); });
     }
     [TestMethod]
     public void CountRowsFromColumns_EmptyInputReturnsZero()
@@ -967,7 +967,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         int expected = 0;
 
-        int output = BasePinningModel.CountRowsFromColumns(input);
+        int output = StandardPinningModel.CountRowsFromColumns(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -983,7 +983,7 @@ public class BasePinningModelTests
 
         int expectedOutput = 4;
 
-        int output = BasePinningModel.CountRowsFromColumns(input);
+        int output = StandardPinningModel.CountRowsFromColumns(input);
 
         Assert.AreEqual(expectedOutput, output);
     }
@@ -995,7 +995,7 @@ public class BasePinningModelTests
         int inputCount = 0;
         ObservableCollection<string> expected = new();
 
-        ObservableCollection<string> output = BasePinningModel.GenerateStandardRowHeaders(inputCount);
+        ObservableCollection<string> output = StandardPinningModel.GenerateStandardRowHeaders(inputCount);
 
         Assert.AreEqual(expected.Count, output.Count);
     }
@@ -1006,7 +1006,7 @@ public class BasePinningModelTests
         string inputBottomPinHeader = "bottomHeader";
         ObservableCollection<string> expected = new() { inputBottomPinHeader };
 
-        ObservableCollection<string> output = BasePinningModel.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader);
+        ObservableCollection<string> output = StandardPinningModel.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -1021,7 +1021,7 @@ public class BasePinningModelTests
         string inputMasterPinHeader = "masterHeader";
         ObservableCollection<string> expected = new(){ inputBottomPinHeader, inputMasterPinHeader, inputMasterPinHeader, inputMasterPinHeader };
 
-        ObservableCollection<string> output = BasePinningModel.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader, inputMasterPinHeader);
+        ObservableCollection<string> output = StandardPinningModel.GenerateStandardRowHeaders(inputCount, inputBottomPinHeader, inputMasterPinHeader);
 
         Assert.AreEqual(expected.Count, output.Count);
 
@@ -1035,7 +1035,7 @@ public class BasePinningModelTests
     {
         List<List<int?>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GenerateStandardRows(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GenerateStandardRows(input); });
     }
     [TestMethod]
     public void GenerateStandardRows_EmptyInputReturnsEmptyOutput()
@@ -1043,7 +1043,7 @@ public class BasePinningModelTests
         List<List<int?>> input = new();
         int expectedCount = 0;
 
-        ObservableCollection<ObservableCollection<string>> output = BasePinningModel.GenerateStandardRows(input);
+        ObservableCollection<ObservableCollection<string>> output = StandardPinningModel.GenerateStandardRows(input);
 
         Assert.AreEqual(expectedCount, output.Count);
     }
@@ -1059,7 +1059,7 @@ public class BasePinningModelTests
 
         int expectedCount = 4;
 
-        ObservableCollection<ObservableCollection<string>> output = BasePinningModel.GenerateStandardRows(input);
+        ObservableCollection<ObservableCollection<string>> output = StandardPinningModel.GenerateStandardRows(input);
 
         Assert.AreEqual(expectedCount, output.Count);
     }
@@ -1070,7 +1070,7 @@ public class BasePinningModelTests
     {
         ObservableCollection<ObservableCollection<string>> input = null;
 
-        Assert.ThrowsException<NullReferenceException>(() => { BasePinningModel.GetMaxRowLength(input); });
+        Assert.ThrowsException<NullReferenceException>(() => { StandardPinningModel.GetMaxRowLength(input); });
     }
     [TestMethod]
     public void GetMaxRowLength_EmptyInputReturnsZeroRowLength()
@@ -1078,7 +1078,7 @@ public class BasePinningModelTests
         ObservableCollection<ObservableCollection<string>> input = new();
         int expected = 0;
 
-        int output = BasePinningModel.GetMaxRowLength(input);
+        int output = StandardPinningModel.GetMaxRowLength(input);
 
         Assert.AreEqual(expected, output);
     }
@@ -1093,7 +1093,7 @@ public class BasePinningModelTests
         };
         int expected = 4;
 
-        int output = BasePinningModel.GetMaxRowLength(input);
+        int output = StandardPinningModel.GetMaxRowLength(input);
 
         Assert.AreEqual(expected, output);
     }
