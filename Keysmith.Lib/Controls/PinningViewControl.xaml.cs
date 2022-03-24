@@ -49,14 +49,12 @@ public partial class PinningViewControl : Frame
     {
         PinningGrid.ColumnDefinitions.Clear();
 
-        ColumnDefinition headerColumn = new ColumnDefinition
-        { Width = HeaderColumnWidth };
+        ColumnDefinition headerColumn = new(){ Width = HeaderColumnWidth };
         PinningGrid.ColumnDefinitions.Add(headerColumn);
 
         for (int currentCount = 1; currentCount <= Pinning.ColumnCount; currentCount++)
         {
-            ColumnDefinition currentColumn = new ColumnDefinition
-            { Width = PinColumnWidth };
+            ColumnDefinition currentColumn = new(){ Width = PinColumnWidth };
             PinningGrid.ColumnDefinitions.Add(currentColumn);
         }
     }
@@ -66,7 +64,7 @@ public partial class PinningViewControl : Frame
 
         for (int rowIndex = 0; rowIndex < Pinning.RowHeaders.Count; rowIndex++)
         {
-            Label currentLabel = new Label
+            Label currentLabel = new()
             {
                 Text = Pinning.RowHeaders[rowIndex],
                 Style = headerStyle
@@ -85,12 +83,12 @@ public partial class PinningViewControl : Frame
 
             for (int columnIndex = 0; columnIndex < currentRow.Count; columnIndex++)
             {
-                Label currentLabel = new Label
+                Label currentLabel = new()
                 {
                     Text = currentRow[columnIndex],
                     Style = pinLabelStyle
                 };
-                Frame currentFrame = new Frame
+                Frame currentFrame = new()
                 {
                     Content = currentLabel,
                     Style = pinFrameStyle

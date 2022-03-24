@@ -5,6 +5,27 @@
 [TestClass()]
 public class StandardPinningModelTests
 {
+    #region Instance Method Tests
+    [TestMethod]
+    public void SetValues_InputKeyListSuccessfullyChangesKeysProperty()
+    {
+        ObservableCollection<IKeyModel> input = new()
+        {
+            new KeyModel(){Cuts="123456"},
+            new KeyModel(){Cuts="234567"}
+        };
+
+        StandardPinningModel pinningModel = new(input);
+
+        ObservableCollection<IKeyModel> output = pinningModel.Keys;
+
+        Assert.IsNotNull(output);
+        Assert.AreEqual(input.Count, output.Count);
+        Assert.AreEqual(input[0], output[0]);
+        Assert.AreEqual(input[1], output[1]);
+    }
+    #endregion
+    #region Static Method Tests
     #region GetMaxKeyLength
     [TestMethod]
     public void GetMaxKeyLength_NullInputThrowsException()
@@ -1097,5 +1118,6 @@ public class StandardPinningModelTests
 
         Assert.AreEqual(expected, output);
     }
+    #endregion
     #endregion
 }

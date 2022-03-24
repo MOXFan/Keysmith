@@ -4,19 +4,14 @@ public class StandardPinningViewModel : PropertyChangedBase
 {
     #region Private Members
     private StandardPinningModel _pinning = new();
-    private ObservableCollection<KeyModel> _keys = new()
-    {
-        new(){ Cuts="134567" },
-        new(){ Cuts="235764" },
-        new(){ Cuts="567423" }
-    };
+    private ObservableCollection<IKeyModel> _keys = new();
     #endregion
     #region Constructors
     public StandardPinningViewModel()
     {
         AddKeyCommand = new Command(AddKey);
         ClearKeysCommand = new Command(ClearKeys);
-        UpdatePinning();
+        ClearKeys();
     }
     #endregion
     #region Properties
@@ -29,7 +24,7 @@ public class StandardPinningViewModel : PropertyChangedBase
             OnPropertyChanged();
         }
     }
-    public ObservableCollection<KeyModel> Keys
+    public ObservableCollection<IKeyModel> Keys
     {
         get { return _keys; }
         set
@@ -44,13 +39,28 @@ public class StandardPinningViewModel : PropertyChangedBase
     #region Methods
     protected void AddKey()
     {
-        throw new NotImplementedException();
+        Keys.Add(NewKey());
+        UpdatePinning();
     }
     protected void UpdatePinning()
     { Pinning = new StandardPinningModel(Keys); }
     public void ClearKeys()
     {
-        Keys = new ObservableCollection<KeyModel>();
+        Keys.Clear();
+        Keys.Add(NewKey());
+        Keys.Add(NewKey());
+
+        UpdatePinning();
+    }    
+    protected KeyModel NewKey()
+    {
+        KeyModel output = new() { Cuts = "000000" };
+        output.PropertyChanged += Key_PropertyChanged;
+        return output;
+    }
+    private void Key_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged("Keys");
         UpdatePinning();
     }
     #endregion

@@ -30,7 +30,6 @@ public class StandardPinningModel : PropertyChangedBase, IPinningModel
     public ObservableCollection<string> RowHeaders { get; protected set; } = new();
     public ObservableCollection<ObservableCollection<string>> Rows { get; protected set; } = new();
     public int ColumnCount { get; protected set; }
-
     public string DriverPinHeader { get; protected set; } = defaultDriverPinHeader;
     public string ControlPinHeader { get; protected set; } = defaultControlPinHeader;
     public string MasterPinHeader { get; protected set; } = defaultMasterPinHeader;
