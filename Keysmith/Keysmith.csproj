@@ -60,6 +60,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Controls\PinningViewControl.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\AbloyPinningView.xaml.cs">
 	    <DependentUpon>AbloyPinningView.xaml</DependentUpon>
 	  </Compile>
@@ -73,6 +76,10 @@
 
 	<ItemGroup>
 		<MauiXaml Update="AppShell.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Controls\PinningViewControl.xaml">
+		  <SubType>Designer</SubType>
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\AbloyPinningView.xaml">

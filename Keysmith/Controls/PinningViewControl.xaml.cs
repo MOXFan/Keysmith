@@ -1,4 +1,4 @@
-namespace Keysmith.Lib.Controls;
+namespace Keysmith.Controls;
 
 public partial class PinningViewControl : Frame
 {

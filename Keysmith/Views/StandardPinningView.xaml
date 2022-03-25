@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Keysmith.Views.StandardPinningView"
              xmlns:vm="clr-namespace:Keysmith.Lib.ViewModels;assembly=Keysmith.Lib"
-             xmlns:controls="clr-namespace:Keysmith.Lib.Controls;assembly=Keysmith.Lib"
+             xmlns:controls="clr-namespace:Keysmith.Controls"
              Title="Standard Cylinders">
     <ContentPage.BindingContext>
         <vm:StandardPinningViewModel/>
