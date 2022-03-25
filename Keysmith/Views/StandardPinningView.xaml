@@ -24,24 +24,7 @@
                     </StackLayout>
 
                     <ScrollView>
-                        <CollectionView ItemsSource="{Binding Keys}" SelectionMode="None">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <ContentView>
-                                        <Frame Margin="0,0,0,2" Style="{StaticResource listItemFrameStyle}">
-                                            <Grid Margin="10,0,10,0" VerticalOptions="Start" ColumnDefinitions="5,auto,*,10,auto,*,5">
-                                                
-                                                <Label Text="Label:" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="1"/>
-                                                <Entry Text="{Binding Label, Mode=TwoWay}" Grid.Row="1" Grid.Column="2"/>
-                                                <Label Text="Cuts:" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="4"/>
-                                                <Entry Text="{Binding Cuts, Mode=TwoWay}" Grid.Row="1" Grid.Column="5"/>
-                                                
-                                            </Grid>
-                                        </Frame>
-                                    </ContentView>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                        <controls:KeyListViewControl ItemsSource="{Binding Keys}" SelectionMode="None"/>                        
                     </ScrollView>
                 </StackLayout>
             </Frame>
