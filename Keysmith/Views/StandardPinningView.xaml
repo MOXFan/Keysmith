@@ -10,6 +10,7 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="2" >
+            
             <Frame Style="{StaticResource panelFrameStyle}" VerticalOptions="Start">
                 <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <controls:PinningViewControl Pinning="{Binding Pinning}" HorizontalOptions="FillAndExpand" VerticalOptions="Center"/>
@@ -18,6 +19,7 @@
             
             <Frame Style="{StaticResource panelFrameStyle}">
                 <StackLayout Orientation="Vertical" Padding="2">
+                    
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="2">
                         <Button Text="ADD KEY" Command="{Binding AddKeyCommand}" HorizontalOptions="CenterAndExpand" Margin="2"/>
                         <Button Text="CLEAR KEYS" Command="{Binding ClearKeysCommand}" HorizontalOptions="CenterAndExpand" Margin="2"/>
@@ -26,8 +28,10 @@
                     <ScrollView>
                         <controls:KeyListViewControl ItemsSource="{Binding Keys}" SelectionMode="None"/>                        
                     </ScrollView>
+                
                 </StackLayout>
             </Frame>
+        
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
