@@ -12,44 +12,22 @@ public class StandardPinningModel : PropertyChangedBase, IPinningModel
     #region Constructors
     public StandardPinningModel()
     {
-        SetValues(new ObservableCollection<IKeyModel>());
-        Initialize();
-    }
-    public StandardPinningModel(IEnumerable<IKeyModel> inputKeys, bool inputIsEndStoppedLeft = true, String inputBottomPinHeader = defaultBottomPinHeader,
-        String inputMasterPinHeader = defaultMasterPinHeader, String inputControlPinHeader = defaultControlPinHeader,
-        String inputDriverPinHeader = defaultDriverPinHeader, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
-    {
-        SetValues(inputKeys, inputIsEndStoppedLeft, inputBottomPinHeader, inputMasterPinHeader, 
-            inputControlPinHeader, inputDriverPinHeader, inputEmptyCellSpacer);
-
         Initialize();
     }
     #endregion
     #region Properties
-    public ObservableCollection<IKeyModel> Keys { get; protected set; } = new();
+    public virtual ObservableCollection<IKeyModel> Keys { get; init; } = new();
     public ObservableCollection<string> RowHeaders { get; protected set; } = new();
     public ObservableCollection<ObservableCollection<string>> Rows { get; protected set; } = new();
     public int ColumnCount { get; protected set; }
-    public string DriverPinHeader { get; protected set; } = defaultDriverPinHeader;
-    public string ControlPinHeader { get; protected set; } = defaultControlPinHeader;
-    public string MasterPinHeader { get; protected set; } = defaultMasterPinHeader;
-    public string BottomPinHeader { get; protected set; } = defaultBottomPinHeader;
-    public string EmptyCellSpacer { get; protected set; } = defaultEmptyCellSpacer;
-    public bool IsEndStoppedLeft { get; protected set; } = true;
+    public string DriverPinHeader { get; init; } = defaultDriverPinHeader;
+    public string ControlPinHeader { get; init; } = defaultControlPinHeader;
+    public string MasterPinHeader { get; init; } = defaultMasterPinHeader;
+    public string BottomPinHeader { get; init; } = defaultBottomPinHeader;
+    public string EmptyCellSpacer { get; init; } = defaultEmptyCellSpacer;
+    public bool IsEndStoppedLeft { get; init; } = true;
     #endregion
     #region Instance Methods
-    protected void SetValues(IEnumerable<IKeyModel> inputKeys, bool inputIsEndStoppedLeft = true, String inputBottomPinHeader = defaultBottomPinHeader,
-        String inputMasterPinHeader = defaultMasterPinHeader, String inputControlPinHeader = defaultControlPinHeader,
-        String inputDriverPinHeader = defaultDriverPinHeader, String inputEmptyCellSpacer = defaultEmptyCellSpacer)
-    {
-        Keys = inputKeys as ObservableCollection<IKeyModel>;
-        IsEndStoppedLeft = inputIsEndStoppedLeft;
-        BottomPinHeader = inputBottomPinHeader;
-        MasterPinHeader = inputMasterPinHeader;
-        ControlPinHeader = inputControlPinHeader;
-        DriverPinHeader = inputDriverPinHeader;
-        EmptyCellSpacer = inputEmptyCellSpacer;
-    }
     protected virtual void Initialize()
     {
         if (Keys is null)

@@ -3,8 +3,8 @@
 public class KeyModel : PropertyChangedBase, IKeyModel
 {
     #region Private Members
-    private String _cuts;
-    private String _label;
+    private String _cuts = "";
+    private String _label = "";
     #endregion
     #region Properties
     public String Cuts

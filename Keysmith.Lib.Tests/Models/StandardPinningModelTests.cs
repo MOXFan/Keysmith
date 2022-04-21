@@ -15,7 +15,7 @@ public class StandardPinningModelTests
             new KeyModel(){Cuts="234567"}
         };
 
-        StandardPinningModel pinningModel = new(input);
+        StandardPinningModel pinningModel = new(){Keys = input};
 
         ObservableCollection<IKeyModel> output = pinningModel.Keys;
 
