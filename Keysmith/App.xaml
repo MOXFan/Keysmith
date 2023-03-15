@@ -5,22 +5,22 @@
              x:Class="Keysmith.App">
     <Application.Resources>
             <Style x:Key="cutsEntryStyle" TargetType="Entry">
-                <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
+                <!--Functionality currently broken in MAUI <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>-->
                 <Setter Property="Keyboard" Value="Numeric"/>
                 <Setter Property="MaxLength" Value="10"/>
             </Style>
             <Style x:Key="codeEntryStyle" TargetType="Entry">
-                <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
+                <!--<Setter Property="ClearButtonVisibility" Value="WhileEditing"/>-->
                 <Setter Property="Keyboard" Value="Plain"/>
                 <Setter Property="IsSpellCheckEnabled" Value="False"/>
                 <Setter Property="IsTextPredictionEnabled" Value="False"/>
             </Style>
             <Style x:Key="idEntryStyle" TargetType="Entry">
-                <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
+                <!--<Setter Property="ClearButtonVisibility" Value="WhileEditing"/>-->
                 <Setter Property="Keyboard" Value="Numeric"/>
             </Style>
             <Style x:Key="textEntryStyle" TargetType="Entry">
-                <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
+                <!--<Setter Property="ClearButtonVisibility" Value="WhileEditing"/>-->
                 <Setter Property="Keyboard" Value="Text"/>
             </Style>
             <Style x:Key="noteEditorStyle" TargetType="Editor">
